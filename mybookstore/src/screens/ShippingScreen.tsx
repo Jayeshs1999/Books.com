@@ -20,7 +20,7 @@ const ShippingScreen = () => {
     const submitHandler = (e:any) => {
         e.preventDefault();
         dispatch(saveShippingAddress({address, city,postalCode, country}));
-        navigate('payment')
+        navigate('/payment')
         
     }
 
