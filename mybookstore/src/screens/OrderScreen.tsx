@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router";
-import { useGetOrderDetailsQuery } from "../slices/orderApiSlice";
+import { useGetOrderDetailsQuery, useGetPayPalClientIdQuery, usePayOrderMutation } from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
-import { Card, Col, Image, ListGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { PayPalButtons, SCRIPT_LOADING_STATE, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const OrderScreen = () => {
+  // enum SCRIPT_LOADING_STATE {
+  //   PENDING = 'pending',
+  //   LOADED = 'loaded',
+  //   ERROR = 'error',
+  // }
   const { id: orderId } = useParams();
 
   const {
@@ -15,6 +23,71 @@ const OrderScreen = () => {
     isLoading,
     error,
   } = useGetOrderDetailsQuery(orderId);
+
+  const [payOrder, {isLoading: loadingPay}] = usePayOrderMutation();
+  const [{isPending}, paypalDispatch] = usePayPalScriptReducer();
+  const {data: paypal, isLoading:loadingPaypal, error: errorPaypal} =  useGetPayPalClientIdQuery('');
+
+  const {userInfo} =useSelector((state:any)=> state.auth)
+
+  useEffect(()=>{
+    if(!errorPaypal && !loadingPaypal && paypal.clientId){
+      const loadPaypalScript = async () => {
+        paypalDispatch({
+          type: 'resetOptions',
+          value: {
+            'clientId':paypal.clientId,
+            currency: 'USD',
+          }
+        });
+        paypalDispatch({type: 'setLoadingStatus', value: SCRIPT_LOADING_STATE.PENDING})
+
+      }
+      if(order && !order.paid) {
+        if(!window.paypal) {
+          loadPaypalScript();
+        }
+      }
+    }
+  }, [order, paypal, paypalDispatch, loadingPaypal, errorPaypal])
+
+  async function onApproveTest() {
+    await payOrder({orderId, details:{payer: {} }});
+    refetch();
+    toast.success("Payment successful")
+
+  }
+
+  function onApprove(data:any,actions:any) {
+    return actions.order.capture().then(async function (details:any) {
+      try {
+        await payOrder({orderId, details});
+        refetch();
+        toast.success("Payment successful")
+
+      }catch(err) {
+        toast.error('Error')
+      }
+    })
+  }
+
+  function createOrder(data: any,actions:any) {
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: order.totalPrice,
+          },
+        }
+      ]
+    }).then((orderId:any) => {
+      return orderId
+    })
+  }
+  function onError(err:any) {
+    toast.error(err.message)
+    
+  }
 
   return isLoading ? (
     <Loader />
@@ -115,6 +188,32 @@ const OrderScreen = () => {
                         </Row>
                     </ListGroup.Item>
                     {/* { PAY ORDER PLACEHOLDER} */}
+                    {!order.isPaid && (
+                      <ListGroup.Item>
+                        {loadingPay && <Loader />}
+                        {isPending ? <Loader /> : (
+                          <div>
+
+                          
+                            {/* <Button onClick={onApproveTest} style={{marginBottom:'10px'}}>
+                              Text Pay Order
+                              </Button> */}
+                              <div>
+                              <PayPalButtons
+                              createOrder={createOrder}
+                              onApprove={onApprove}
+                              onError={onError}
+
+                              >
+
+                              </PayPalButtons>
+
+                              </div>
+                        
+                              </div>
+                        )}
+                      </ListGroup.Item>
+                    )}
                     {/* { MARK AS DELEVERED  PLACEHOLDER} */}
                 </ListGroup>
             </Card>
