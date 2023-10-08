@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
-import { useGetOrderDetailsQuery, useGetPayPalClientIdQuery, usePayOrderMutation } from "../slices/orderApiSlice";
+import { useDeliverOrderMutation, useGetOrderDetailsQuery, useGetPayPalClientIdQuery, usePayOrderMutation } from "../slices/orderApiSlice";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Button, Card, Col, Image, ListGroup, Row } from "react-bootstrap";
@@ -25,6 +25,7 @@ const OrderScreen = () => {
   } = useGetOrderDetailsQuery(orderId);
 
   const [payOrder, {isLoading: loadingPay}] = usePayOrderMutation();
+  const [deliverOrder, {isLoading: loadingDeliver}] = useDeliverOrderMutation();
   const [{isPending}, paypalDispatch] = usePayPalScriptReducer();
   const {data: paypal, isLoading:loadingPaypal, error: errorPaypal} =  useGetPayPalClientIdQuery('');
 
@@ -87,6 +88,16 @@ const OrderScreen = () => {
   function onError(err:any) {
     toast.error(err.message)
     
+  }
+
+  const deliverOrderHandler = async () => {
+    try {
+      await deliverOrder(orderId);
+      refetch();
+      toast.success("Order delivered")
+    }catch(error) {
+      toast.error("Error in order screen")
+    }
   }
 
   return isLoading ? (
@@ -215,6 +226,18 @@ const OrderScreen = () => {
                       </ListGroup.Item>
                     )}
                     {/* { MARK AS DELEVERED  PLACEHOLDER} */}
+                    {loadingDeliver  && <Loader /> }
+                    {userInfo && userInfo.isAdmin && order.isPaid && 
+                    !order.isDelivered && (
+                      <ListGroup.Item>
+                        <Button type="button" className="btn btn-block"
+                        onClick={deliverOrderHandler}
+                        >
+                          Mark As Delivered
+                        </Button>
+                      </ListGroup.Item>
+                    )
+                    }
                 </ListGroup>
             </Card>
         </Col>
