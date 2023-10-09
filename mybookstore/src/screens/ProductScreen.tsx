@@ -26,7 +26,6 @@ const ProductScreen = () => {
     error,
   } = useGetProductDetailsQuery(productId);
 
-  console.log(product)
 
   const [createReview, {isLoading: LoadingProductReview}] = useCreateReviewMutation();
 

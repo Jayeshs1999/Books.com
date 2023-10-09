@@ -16,7 +16,7 @@ const HomeScreen = () => {
   return (
     <>
 
-    {!keyword ? <ProductCorousel/> : <Link to={'/'} className="btn btn-light mb-4">go Back</Link>}
+    {!keyword && !isLoading ? <ProductCorousel/> : <Link to={'/'} className="btn btn-light mb-4">go Back</Link>}
     {isLoading ? (<Loader/>): error? (<Message variant='danger'>Something Went Wrong</Message>) :(
       <>
       <h1>Latest Product</h1>
@@ -39,12 +39,3 @@ const HomeScreen = () => {
 };
 
 export default HomeScreen;
-
-  // <h1>Latest Product</h1>
-  //     <Row>
-  //       {products && products.map((product) => (
-  //         <Col key={product && product['_id']} sm={12} md={6} lg={4} xl={3}>
-  //           <Product product={product} />
-  //         </Col>
-  //       ))}
-  //     </Row>

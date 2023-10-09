@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 const ProductCorousel = () => {
     const {data:products , isLoading, error} = useGetTopProductsQuery('');
-    console.log("proudct ",products)
   return ( 
     isLoading? <Loader/>:
     error ? <Message variant='danger'>{error}</Message>:

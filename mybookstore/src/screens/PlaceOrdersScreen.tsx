@@ -37,9 +37,8 @@ const PlaceOrdersScreen = () => {
             taxPrice: cart.taxPrice,
             totalPrice: cart.totalPrice
         }).unwrap();
-        dispatch(clearCartItems(''));
-        console.log("res_________",res.createOrder._id)
-        navigate(`/order/${res.createOrder._id}`)
+        // dispatch(clearCartItems(''));
+        navigate(`/order/${res._id}`)
 
     }catch(error) {
         toast.error("Error")

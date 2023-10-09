@@ -8,7 +8,6 @@ const protect = asyncHandler(async (req,res,next)=> {
     let token;
 
     // read the jwt from cookie
-    console.log(req)
     token = req.cookies.jwt;
     if(token) {
         try{
