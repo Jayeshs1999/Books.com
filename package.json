@@ -10,7 +10,8 @@
     "client": "npm start --prefix mybookstore",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "data:import": "node backend/seeder.js",
-    "data:destroy": "node backend/seeder.js -d"
+    "data:destroy": "node backend/seeder.js -d",
+    "build": "npm install && npm install --prefix mybookstore && npm run build --prefix mybookstore"
   },
   "repository": {
     "type": "git",

@@ -6,9 +6,12 @@ import Loader from '../../components/Loader';
 import Message from '../../components/Message';
 import { LinkContainer } from 'react-router-bootstrap';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router';
+import Paginate from '../../components/Paginate';
 
 const ProductListScreen = () => {
-    const {data:products, isLoading, refetch, error} = useGetProductsQuery('');
+    const  {pageNumber} = useParams();
+    const {data, isLoading, refetch, error} = useGetProductsQuery({pageNumber});
     const [createProduct, {isLoading: loadingCreate}] = useCreateProductMutation();
     const [deleteProduct, {isLoading:loadingDelete }] = useDeleteProductMutation();
 
@@ -69,7 +72,7 @@ const ProductListScreen = () => {
 
                 </thead>
                 <tbody>
-                    {products.map((product:any)=>(
+                    {data.products.map((product:any)=>(
                         <tr key={product._id}>
                             <td>{product._id}</td>
                             <td>{product.name}</td>
@@ -93,6 +96,7 @@ const ProductListScreen = () => {
                 </tbody>
                 
             </Table>
+            <Paginate page={data.page} pages={data.pages} isAdmin={true} />
             </>
         ) }
     </>

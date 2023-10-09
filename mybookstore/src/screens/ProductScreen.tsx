@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
 import { toast } from "react-toastify";
+import Meta from "../components/Meta";
 
 const ProductScreen = () => {
   const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const ProductScreen = () => {
         <Message variant='danger'>Something Went Wrong</Message>
       ) : (
         <>
-
+          <Meta title={product.name} />
         <Row>
           <Col md={5}>
             <Image
