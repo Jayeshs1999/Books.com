@@ -3,6 +3,13 @@ import { Pagination } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
 
 const Paginate = ({pages,page, isAdmin=false, keyword= ''}:any) => {
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth', // for smooth scrolling
+    });
+  };
   return (
     <>
      {pages > 1 &&  (
@@ -12,6 +19,7 @@ const Paginate = ({pages,page, isAdmin=false, keyword= ''}:any) => {
                 to={
                     !isAdmin? keyword ? `/search/${keyword}/page/${x+1}`: `/page/${x+1}`:`/admin/productlist/${x+1}`
                 }
+                onClick={scrollToTop}
                 >
                     <Pagination.Item active={x+1 === page}>
                         {x+1}

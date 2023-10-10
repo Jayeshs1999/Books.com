@@ -33,7 +33,7 @@ const ProductScreen = () => {
 
   const addToCartHandler =() => {
     dispatch(addToCart({...product, qty}));
-    navigate('/cart')
+    navigate(`/cart?comesFrom=productDetails&productId=${productId}`)
   }
 
   const submitHandler = async (e:any) => {
@@ -82,7 +82,7 @@ const ProductScreen = () => {
                 />
               </ListGroup.Item>
               <ListGroup.Item>
-                Price: ${product && product["price"]}
+                Price: Rs.{product && product["price"]}
               </ListGroup.Item>
               <ListGroup.Item>
                 Description: {product && product["description"]}
@@ -96,7 +96,7 @@ const ProductScreen = () => {
                   <Row>
                     <Col>Price:</Col>
                     <Col>
-                      <strong>${product && product["price"]}</strong>
+                      <strong>Rs.{product && product["price"]}</strong>
                     </Col>
                   </Row>
                 </ListGroup.Item>

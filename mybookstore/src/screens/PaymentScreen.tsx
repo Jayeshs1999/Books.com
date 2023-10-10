@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { savePaymentMethod } from "../slices/cartSlice";
 
 const PaymentScreen = () => {  
-  const [paymentMethod, setPaymentMethod] = useState("PayPal");
+  const [paymentMethod, setPaymentMethod] = useState("CashOnDelivery");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -35,7 +35,7 @@ const PaymentScreen = () => {
         <Form.Group>
           <Form.Label as={"legend"}>Select Method</Form.Label>
           <Col>
-            <Form.Check
+            {/* <Form.Check
               type="radio"
               className="my-2"
               label="Paypal or Credit Card"
@@ -46,7 +46,31 @@ const PaymentScreen = () => {
               onChange={(e) => {
                 setPaymentMethod(e.target.value);
               }}
-            ></Form.Check>
+            ></Form.Check> */}
+
+{['radio'].map((type) => (
+        <div key={`inline-radio`} className="mb-3">
+          <Form.Check
+            inline
+            label="Cash On Delivery"
+            name="group1"
+            checked
+            type='radio'
+            value="CashOnDelivery"
+            id={`inline-${type}-2`}
+            onChange={(e) => {
+              setPaymentMethod(e.target.value);
+            }}
+          />
+          <Form.Check
+            inline
+            disabled
+            label="Paypal"
+            type="radio"
+            id={`inline-radio-3`}
+          />
+        </div>
+      ))}
           </Col>
         </Form.Group>
         <Button type="submit" variant="primary">

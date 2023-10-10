@@ -8,7 +8,7 @@ import { verifyPayPalPayment, checkIfNewTransaction } from '../utils/paypal.js';
 //@route POST /api/orders
 //@access Private
 const addOrderItems = asyncHandler(async (req, res) => {
-  const { orderItems, shippingAddress, paymentMethod } = req.body;
+  const { orderItems, shippingAddress, paymentMethod,email_address } = req.body;
 
   if (orderItems && orderItems.length === 0) {
     res.status(400);
@@ -45,6 +45,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
       taxPrice,
       shippingPrice,
       totalPrice,
+      email_address
     });
 
     const createdOrder = await order.save();
@@ -116,6 +117,7 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   if(order) {
     order.isPaid =true;
     order.paidAt = Date.now();
+    order.email_address = req.body.email_address
     order.paymentResult = {
       id: req.body.id,
       status: req.body.status,

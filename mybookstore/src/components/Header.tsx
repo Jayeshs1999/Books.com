@@ -34,7 +34,7 @@ const Header = () => {
       <Navbar bg="primary" className="navbar-bg-color" variant="dark" expand="md" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
-            <Navbar.Brand>
+            <Navbar.Brand className="domain-font">
               <img width={"50px"} src={logo} alt="abs" />
                 &nbsp; TheBookReuse
             </Navbar.Brand>
@@ -57,7 +57,7 @@ const Header = () => {
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id="username">
                   <LinkContainer to="/profile">
-                    <NavDropdown.Item>Profile</NavDropdown.Item>
+                    <NavDropdown.Item>Profile & Orders</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Item onClick={logoutHandler}>
                     Logout

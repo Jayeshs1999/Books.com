@@ -56,3 +56,11 @@ table th {
 .navbar-bg-color {
   background: linear-gradient(45deg, rgb(233, 108, 108), blue);
 }
+
+.domain-font {
+  font-family: 'Exo 2', sans-serif;
+  /* font-family: 'Montserrat Alternates', sans-serif; */
+  /* font-family: 'Pacifico', cursive; */
+  /* font-family: 'Young Serif', serif; */
+}
+

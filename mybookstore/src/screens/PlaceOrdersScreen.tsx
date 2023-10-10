@@ -16,6 +16,7 @@ const PlaceOrdersScreen = () => {
   const dispatch = useDispatch();
 
   const [createOrder, {isLoading,error}] = useCreateOrderMutation();
+  const { userInfo } = useSelector((state: any) => state.auth);
 
 
   useEffect(() => {
@@ -35,9 +36,10 @@ const PlaceOrdersScreen = () => {
             itemsPrice: cart.itemsPrice,
             shippingPrice: cart.shippingPrice,
             taxPrice: cart.taxPrice,
-            totalPrice: cart.totalPrice
+            totalPrice: cart.totalPrice,
+            email_address: userInfo.email
         }).unwrap();
-        // dispatch(clearCartItems(''));
+        dispatch(clearCartItems([]));
         navigate(`/order/${res._id}`)
 
     }catch(error) {
@@ -52,9 +54,9 @@ const PlaceOrdersScreen = () => {
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h2>Shipping</h2>
+              <h2>Shipping Address</h2>
               <p>
-                <strong>Address:</strong>
+                <strong>Address:&nbsp;&nbsp;</strong>
                 {cart.shippingAddress.address},{cart.shippingAddress.city},
                 {cart.shippingAddress.postalCode},{cart.shippingAddress.country}
               </p>
@@ -62,7 +64,7 @@ const PlaceOrdersScreen = () => {
 
             <ListGroup.Item>
               <h2>Payment Method</h2>
-              <strong>Method:</strong>
+              <strong>Method:&nbsp;</strong>
               {cart.paymentMethod},
             </ListGroup.Item>
 
@@ -89,7 +91,7 @@ const PlaceOrdersScreen = () => {
                           </Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} * ${item.price} = ${item.qty * item.price}
+                          {item.qty} * Rs.{item.price} = Rs.{item.qty * item.price}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -109,7 +111,7 @@ const PlaceOrdersScreen = () => {
                         <Row>
                             <Col> Items:
                             </Col>
-                            <Col> ${cart.itemsPrice}
+                            <Col> Rs.{cart.itemsPrice}
                             </Col>
                         </Row>
                     </ListGroup.Item>
@@ -118,7 +120,7 @@ const PlaceOrdersScreen = () => {
                         <Row>
                             <Col> Shipping:
                             </Col>
-                            <Col> ${cart.shippingPrice}
+                            <Col> Rs.{cart.shippingPrice}
                             </Col>
                         </Row>
                     </ListGroup.Item>
@@ -127,7 +129,7 @@ const PlaceOrdersScreen = () => {
                         <Row>
                             <Col> Tax:
                             </Col>
-                            <Col> ${cart.taxPrice}
+                            <Col> Rs.{cart.taxPrice}
                             </Col>
                         </Row>
                     </ListGroup.Item>
@@ -136,7 +138,7 @@ const PlaceOrdersScreen = () => {
                         <Row>
                             <Col> Total:
                             </Col>
-                            <Col> ${cart.totalPrice}
+                            <Col> Rs.{cart.totalPrice}
                             </Col>
                         </Row>
                     </ListGroup.Item>
