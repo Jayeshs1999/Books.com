@@ -31,12 +31,12 @@ const Header = () => {
   };
   return (
     <header>
-      <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
+      <Navbar bg="primary" className="navbar-bg-color" variant="dark" expand="md" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>
-              <img src={logo} alt="abs" />
-              BookShop
+              <img width={"50px"} src={logo} alt="abs" />
+                &nbsp; TheBookReuse
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle area-aria-controls="basic-navbar-nav" />

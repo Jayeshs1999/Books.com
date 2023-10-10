@@ -51,3 +51,8 @@ table th {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
+
+
+.navbar-bg-color {
+  background: linear-gradient(45deg, rgb(233, 108, 108), blue);
+}
