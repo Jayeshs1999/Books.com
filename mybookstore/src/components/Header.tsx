@@ -30,13 +30,13 @@ const Header = () => {
     }
   };
   return (
-    <header>
+    <header className="sticky-header">
       <Navbar bg="primary" className="navbar-bg-color" variant="dark" expand="md" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand className="domain-font">
               <img width={"50px"} src={logo} alt="abs" />
-                &nbsp; TheBookReuse
+                &nbsp; BookBucket
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle area-aria-controls="basic-navbar-nav" />
