@@ -78,6 +78,7 @@ const OrderScreen = () => {
     const isPaidSuccessfully = await payOrder({ orderId, details: { email_address: userInfo.email , payer: {} } });
 
     try {
+      //send email here
       if(isPaidSuccessfully) {
         await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_TEMPLATE_ID}`, {
           name:userInfo.name,
@@ -179,7 +180,7 @@ const OrderScreen = () => {
               </p>
               {order.paymentMethod==='CashOnDelivery' &&
                order.isPaid ? <Message variant="success">Order Confirm! </Message>:
-               <Message variant="danger">Not Confirm (click on Place order button to confirm ) </Message>
+               <Message variant="danger">Order Not Confirm (click on Place order button to confirm ) </Message>
               }
               { order.paymentMethod==='paypal' && ( order.isPaid ? (
                 <Message variant="success">Paid on {order.paidAt}</Message>

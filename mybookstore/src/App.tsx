@@ -10,7 +10,7 @@ function App() {
     <>
       <Header />
       <main className="py-3">
-        <Container>
+        <Container style={{marginTop:'100px'}}>
           <Outlet />
         </Container>
       </main>

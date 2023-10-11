@@ -24,8 +24,7 @@ function OnlineStatusChecker() {
   return (
     <div className="online-status">
       {isOnline ? (
-        // User is online
-        <p></p>
+        ''
       ) : (
         // User is offline
         <div  style={{display:'flex', flexDirection:'column',alignItems:'center', justifyContent:'center'}}>

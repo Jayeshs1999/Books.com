@@ -800,7 +800,7 @@ progress {
   .container-md,
   .container-sm,
   .container {
-    max-width: 1140px;
+    max-width: 1240px;
   }
 }
 @media (min-width: 1400px) {
@@ -810,7 +810,7 @@ progress {
   .container-md,
   .container-sm,
   .container {
-    max-width: 1320px;
+    max-width: 1520px;
   }
 }
 .row {
