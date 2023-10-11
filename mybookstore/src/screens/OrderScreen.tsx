@@ -28,6 +28,7 @@ const OrderScreen = () => {
   //   ERROR = 'error',
   // }
   const { id: orderId } = useParams();
+  console.log(process.env.REACT_APP_SERVICE_ID)
 
   const {
     data: order,
@@ -76,21 +77,44 @@ const OrderScreen = () => {
   async function onApproveTest(e:any) {
     e.preventDefault();
     const isPaidSuccessfully = await payOrder({ orderId, details: { email_address: userInfo.email , payer: {} } });
-
+    localStorage.removeItem('cart')
+    refetch();
+    toast.success("Payment successful");
     try {
-      //send email here
-      if(isPaidSuccessfully) {
-        await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_TEMPLATE_ID}`, {
-          name:userInfo.name,
-           recipient: userInfo.email
+      //reciever email here
+      if('data' in isPaidSuccessfully) {
+        const updatedData = isPaidSuccessfully && isPaidSuccessfully?.data?.updatedAt;
+        const paymentMethod =  'Cash On Delivery';
+        const address = `${isPaidSuccessfully?.data.shippingAddress?.address} 
+        ${isPaidSuccessfully?.data.shippingAddress?.postalCode} ${isPaidSuccessfully?.data.shippingAddress?.city} 
+        ${isPaidSuccessfully?.data.shippingAddress?.state} ${isPaidSuccessfully?.data.shippingAddress?.country} `
+
+        console.log(isPaidSuccessfully?.data.shippingAddress?.country)
+        await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_RECEIVER_TEMPLATE_ID}`, 
+        {
+          userName:userInfo.name,
+          recipient: userInfo.email,
+          senderName: 'BookBucket',
+          currentDate: updatedData,
+          paymentMethod: paymentMethod,
+          shippingAddress : address
+         },
+         `${process.env.REACT_APP_PUBLIC_ID}`);
+
+         await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_SENDER_TEMPLATE_ID}`, {
+          name:"Admin BookBucket",
+           recipient: 'jayesh.sevatkar10@gmail.com',
+           orderMadeBy: userInfo.name,
+           whoMakeOrder: userInfo.email,
+           currentDate: updatedData,
+           paymentMethod: paymentMethod,
+           shippingAddress : address
+
          },`${process.env.REACT_APP_PUBLIC_ID}`);
       }
     } catch (error) {
       console.log("error",error);
     }
-    localStorage.removeItem('cart')
-    refetch();
-    toast.success("Payment successful");
   }
 
   function onApprove(data: any, actions: any) {
