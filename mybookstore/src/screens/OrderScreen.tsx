@@ -81,7 +81,6 @@ const OrderScreen = () => {
     refetch();
     toast.success("Payment successful");
     try {
-      //reciever email here
       if('data' in isPaidSuccessfully) {
         const updatedData = isPaidSuccessfully && isPaidSuccessfully?.data?.updatedAt;
         const paymentMethod =  'Cash On Delivery';
@@ -90,6 +89,7 @@ const OrderScreen = () => {
         ${isPaidSuccessfully?.data.shippingAddress?.state} ${isPaidSuccessfully?.data.shippingAddress?.country} `
 
         console.log(isPaidSuccessfully?.data.shippingAddress?.country)
+        //Reciever email here
         await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_RECEIVER_TEMPLATE_ID}`, 
         {
           userName:userInfo.name,
@@ -101,6 +101,7 @@ const OrderScreen = () => {
          },
          `${process.env.REACT_APP_PUBLIC_ID}`);
 
+        //Sender email here
          await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_SENDER_TEMPLATE_ID}`, {
           name:"Admin BookBucket",
            recipient: 'jayesh.sevatkar10@gmail.com',
