@@ -18,6 +18,7 @@ import {
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
+import sendEmail from "../utils/sendEmail";
 
 const OrderScreen = () => {
   const apiKey = process.env.REACT_APP_PUBLIC_ID;
@@ -28,8 +29,6 @@ const OrderScreen = () => {
   //   ERROR = 'error',
   // }
   const { id: orderId } = useParams();
-  console.log(process.env.REACT_APP_SERVICE_ID)
-
   const {
     data: order,
     refetch,
@@ -49,7 +48,6 @@ const OrderScreen = () => {
 
   const { userInfo } = useSelector((state: any) => state.auth);
   useEffect(() => emailjs.init(`UGWfAbgi4R_2THHA0`), []);
-  console.log(apiKey)
 
   useEffect(() => {
     if (!errorPaypal && !loadingPaypal && paypal.clientId) {
@@ -81,7 +79,6 @@ const OrderScreen = () => {
     refetch();
     toast.success("Payment successful");
     try {
-      //reciever email here
       if('data' in isPaidSuccessfully) {
         const updatedData = isPaidSuccessfully && isPaidSuccessfully?.data?.updatedAt;
         const paymentMethod =  'Cash On Delivery';
@@ -89,18 +86,23 @@ const OrderScreen = () => {
         ${isPaidSuccessfully?.data.shippingAddress?.postalCode} ${isPaidSuccessfully?.data.shippingAddress?.city} 
         ${isPaidSuccessfully?.data.shippingAddress?.state} ${isPaidSuccessfully?.data.shippingAddress?.country} `
 
-        console.log(isPaidSuccessfully?.data.shippingAddress?.country)
-        await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_RECEIVER_TEMPLATE_ID}`, 
-        {
-          userName:userInfo.name,
-          recipient: userInfo.email,
-          senderName: 'BookBucket',
-          currentDate: updatedData,
-          paymentMethod: paymentMethod,
-          shippingAddress : address
-         },
-         `${process.env.REACT_APP_PUBLIC_ID}`);
+        //Reciever email here
 
+
+        sendEmail({
+          name: userInfo.name,
+          email: userInfo.email,
+          senderName: "BookBucket",
+          titleMessage: `Congratulations!, ${userInfo.name}`,
+          message: 'Congratulations! Your order has been confirmed successfully. we will deliver your order soon.',
+          subMessage: 'Order Summary',
+          otp:'',
+          currentDate: `Current Date: ${updatedData}`,
+          paymentMethod: `Payment method: ${paymentMethod}`,
+          shippingAddress: `Shipping Address: ${address}`,
+        });
+
+        //Sender email here
          await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_SENDER_TEMPLATE_ID}`, {
           name:"Admin BookBucket",
            recipient: 'jayesh.sevatkar10@gmail.com',
