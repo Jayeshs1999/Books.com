@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import FormContainer from "../components/FormContainer";
-import { Button, Col, Form, FormGroup, Modal, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, FormGroup, Modal, Row } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useRegisterMutation } from "../slices/usersApiSlice";
@@ -122,7 +122,9 @@ const RegisterScreen = () => {
   return (
     <>
       <FormContainer>
-        <h1>Sign Up</h1>
+      <Card className="mt-5" style={{display:'flex', borderRadius:'10px'}}>
+      <Card.Body>
+        <h1 className="text-center">Sign Up</h1>
         <Form onSubmit={submitHandler}>
           <FormGroup controlId="name" className="my-3">
             <Form.Label>Name</Form.Label>
@@ -168,14 +170,15 @@ const RegisterScreen = () => {
             type="submit"
             variant="primary"
             disabled={isLoading || isFormDateDisabled}
-            className="mt-2"
+            className="mt-2 w-100"
           >
             Register
           </Button>
 
           {isLoading && <Loader />}
         </Form>
-        <Row className="py-3">
+        </Card.Body>
+        <Row className="py-3 text-center">
           <Col>
             Already have an account?{" "}
             <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
@@ -183,6 +186,7 @@ const RegisterScreen = () => {
             </Link>
           </Col>
         </Row>
+        </Card>
       </FormContainer>
       <Modal
         show={showVerificationPopup}

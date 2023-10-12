@@ -24,6 +24,44 @@ const authUser =asyncHandler( async (req,res)=>{
         res.status(401);
         throw new Error('Invalid email or password')
     }
+});
+
+//@desc check user password
+//@route POST /api/user/forgetpassword
+//@access Public
+const checkEmailExist = asyncHandler(async (req,res)=>{
+    const {email} = req.body;
+    const user = await User.findOne({email})
+    if(user) {
+        res.status(200).json({email: user.email})
+    }else {
+        res.status(200).json({email: ''})
+    }
+
+})
+
+//@desc forget user password
+//@route PUT /api/users/forgetpassword
+//@access Public
+const forgetPassword = asyncHandler(async (req,res) =>{
+    const {email, password} = req.body;
+    const user = await User.findOne({email})
+    if(user) {
+        if(password) {
+            user.password = req.body.password;
+        }
+        const updatedUser = await user.save();
+        res.status(200).json({
+            _id: updatedUser._id,
+            name: updatedUser.name,
+            email: updatedUser.email,
+            isAdmin: updatedUser.isAdmin
+        })
+
+    }else {
+        res.status(400);
+        throw new Error('Something went wrong')
+    }
 })
 
 //@desc register user
@@ -188,6 +226,8 @@ export {
     getUsers,
     getUserById,
     deleteUser,
-    updateUser
+    updateUser,
+    checkEmailExist,
+    forgetPassword
 }
 
