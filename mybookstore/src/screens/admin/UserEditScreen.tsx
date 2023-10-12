@@ -6,8 +6,6 @@ import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
 import { useGetUserDetailsQuery, useUpdatedUserMutation } from "../../slices/usersApiSlice";
 
 const UserEditScreen= () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Card, Col, Form, Image, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate } from "react-router";
 import Message from "../components/Message";
 import { Link, useSearchParams } from "react-router-dom";
 import { ListGroup } from "react-bootstrap";

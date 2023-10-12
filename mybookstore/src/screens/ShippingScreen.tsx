@@ -35,17 +35,17 @@ const ShippingScreen = () => {
   };
   useEffect(() => {
     if (
-      address != "" &&
-      city != "" &&
-      postalCode != "" &&
-      country != "" &&
-      state != ""
+      address !== "" &&
+      city !== "" &&
+      postalCode !== "" &&
+      country !== "" &&
+      state !== ""
     ) {
       setIsContinueButtonDisabled(false);
     } else {
       setIsContinueButtonDisabled(true);
     }
-  }, [address, city, state, address, postalCode]);
+  }, [address, city, state, postalCode,country]);
 
   return (
     <>
