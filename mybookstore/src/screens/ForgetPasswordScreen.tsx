@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import FormContainer from '../components/FormContainer'
 import { Button, Card, Col, Form, FormGroup, Row } from 'react-bootstrap'
 import { useCheckUserExistMutation, useForgetPasswordMutation } from '../slices/usersApiSlice';
@@ -13,6 +13,8 @@ const ForgetPasswordScreen = () => {
   const [password, setPassword] = useState("");
   const [checkEmail, setCheckEmail] = useState(false);
   const navigate = useNavigate();
+  const [isFormDateDisabled, setIsFormDateDisabled] = useState(true);
+  const passwordPattern = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/;
 
   const [checkUserExist, {isLoading,error}] = useCheckUserExistMutation();
   const [forgetPassword, {isLoading: submitButtonLoading,error:forgetPasswordError}] = useForgetPasswordMutation();
@@ -27,17 +29,27 @@ const ForgetPasswordScreen = () => {
   }
 
   const handleUpdatePassword = async (e:any) => {
-    console.log("clicked")
     e.preventDefault();
-    try {
-      await forgetPassword({email,password})
-      toast.success("Password change successfully")
-      navigate('/login')
-      
-    }catch(error) {
-      toast.error("Something went wrong")
+    if(password.match(passwordPattern)) {
+      try {
+        await forgetPassword({email,password})
+        toast.success("Password change successfully")
+        navigate('/login')
+      }catch(error) {
+        toast.error("Something went wrong")
+      }
+    }else {
+        toast.error("Password should contain 0-9,a-z,!,@,# ")
     }
   }
+
+  useEffect(() => {
+    if (email !== "" && password !== "") {
+      setIsFormDateDisabled(false);
+    } else {
+      setIsFormDateDisabled(true);
+    }
+  }, [email, password]);
 
   return (
     <FormContainer>
@@ -68,7 +80,7 @@ const ForgetPasswordScreen = () => {
           <Button 
             type="button"
             variant="primary"
-           
+            disabled={isFormDateDisabled || submitButtonLoading}
             onClick={handleUpdatePassword}
             className="mt-2 w-100"
           >
