@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import FormContainer from "../components/FormContainer";
-import { Button, Col, Form, FormGroup, Row } from "react-bootstrap";
+import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useLoginMutation } from "../slices/usersApiSlice";
@@ -40,40 +40,60 @@ const LoginScreen = () => {
 
   return (
     <FormContainer>
-      <h1>Sign In</h1>
-      <Form onSubmit={submitHandler}>
-        <FormGroup controlId="email" className="my-3">
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            onChange={(e) => setEmail(e.target.value)}
-          ></Form.Control>
-        </FormGroup>
+      <Card className="mt-5" style={{ display: "flex", borderRadius: "10px" }}>
+        <Card.Body>
+          <h1 className="text-center">Sign In</h1>
+          <Form onSubmit={submitHandler}>
+            <FormGroup controlId="email" className="my-3">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Enter email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </FormGroup>
 
-        <FormGroup controlId="password" className="my-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          ></Form.Control>
-        </FormGroup>
+            <FormGroup controlId="password" className="my-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Enter password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormGroup>
+            <div className="text-center">
+              <Button
+                type="submit"
+                variant="primary"
+                disabled={isLoading}
+                className="mt-2 w-100"
+              >
+                Sign In
+              </Button>
+              <div style={{ display: "flex", justifyContent: "end", marginTop:'5px' }}>
+                <Link to={"/forgetpassword"} className="text-end">
+                  Forget Password
+                </Link>
+              </div>
+            </div>
 
-        <Button type="submit" variant="primary" 
-        disabled= {isLoading}
-        className="mt-2">
-          Sign In
-        </Button>
+            {isLoading && <Loader />}
+          </Form>
+        </Card.Body>
 
-        {isLoading && <Loader />}
-      </Form>
-      <Row className="py-3">
-        <Col>
-          New User? <Link to={redirect ? `/register?redirect=${redirect}` :  '/register'}>Register</Link>
-        </Col>
-      </Row>
+        <Row className="py-3">
+          <Col className="text-center">
+            New User?{" "}
+            <Link
+              to={redirect ? `/register?redirect=${redirect}` : "/register"}
+            >
+              Register
+            </Link>
+          </Col>
+        </Row>
+      </Card>
     </FormContainer>
   );
 };
