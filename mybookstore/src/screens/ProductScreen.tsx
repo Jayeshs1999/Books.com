@@ -8,6 +8,7 @@ import {
   FormLabel,
   Image,
   ListGroup,
+  Modal,
   Row,
 } from "react-bootstrap";
 import Rating from "../components/Rating";
@@ -31,6 +32,7 @@ const ProductScreen = () => {
   const { id: productId } = useParams();
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
 
   const {
     data: product,
@@ -59,9 +61,17 @@ const ProductScreen = () => {
       setRating(0);
       setComment("");
     } catch (err) {
-      toast.error("Error in prodcut screen");
+      toast.error("Review already submitted");
     }
   };
+
+  const handleCloseVerificationPopup = () => {
+    setShowVerificationPopup(false)
+  };
+
+  const openReviewPopup = () => {
+    setShowVerificationPopup(true);
+  }
 
   return (
     <>
@@ -69,7 +79,7 @@ const ProductScreen = () => {
         <OnlineStatusChecker />
       ) : (
         <>
-         <OnlineStatusChecker />
+          <OnlineStatusChecker />
           <Link to="/" className="btn btn-light my-3">
             Go Back
           </Link>
@@ -176,14 +186,21 @@ const ProductScreen = () => {
                     <Message>No Reviews</Message>
                   )}
                   <ListGroup variant="flush">
-                    {product.reviews.map((review: any) => (
-                      <ListGroup.Item key={review._id}>
-                        <strong>{review.name}</strong>
-                        <Rating value={review.rating} />
-                        <p>{review.createdAt.substring(0, 10)}</p>
-                        <p>{review.comment}</p>
+                    {product.reviews.length > 0 && (
+                      <ListGroup.Item key={product.reviews[0]._id}>
+                        <strong>{product.reviews[0].name}</strong>
+                        <Rating value={product.reviews[0].rating} />
+                        <p>{product.reviews[0].createdAt.substring(0, 10)}</p>
+                        <p>{product.reviews[0].comment}</p>
                       </ListGroup.Item>
-                    ))}
+                    )}
+                    {product.reviews.length > 1 && <Button
+                      type="submit"
+                      variant="danger"
+                      onClick={openReviewPopup}
+                    >
+                      See all reviews
+                    </Button>}
 
                     <ListGroup.Item>
                       <h2>Write a Customer Review</h2>
@@ -226,7 +243,7 @@ const ProductScreen = () => {
                         </Form>
                       ) : (
                         <Message>
-                          Please <Link to={"/login"}>Sing in</Link> to write a
+                          Please <Link to={"/login"}>Sign in</Link> to write a
                           review
                         </Message>
                       )}
@@ -234,6 +251,42 @@ const ProductScreen = () => {
                   </ListGroup>
                 </Col>
               </Row>
+
+              {/* Drawer  */}
+              <Modal  size='lg'
+                show={showVerificationPopup}
+                onHide={handleCloseVerificationPopup}
+              >
+
+                <Modal.Header closeButton>
+                  <Modal.Title>Reviews</Modal.Title>
+                </Modal.Header>
+                <Modal.Body style={{height:'60vh', overflow:'auto'}}>
+                  <>
+                  <Row>
+                    <Col>
+                    {product.reviews.map((review: any,index:number) => (
+                      <ListGroup.Item key={review._id}>
+                        <div style={{display:'flex',}}>
+                          <div>
+                            <strong>{index+1}.</strong>&nbsp;
+                          </div>
+                          <div>
+                          <strong>{review.name}</strong>
+                        <Rating value={review.rating} />
+                        <p>{review.createdAt.substring(0, 10)}</p>
+                        <p>{review.comment}</p>
+
+                          </div>
+                        </div>
+                      </ListGroup.Item>
+                    ))}
+                    </Col>
+                  </Row>
+                    
+                  </>
+                </Modal.Body>
+              </Modal>
             </>
           )}
         </>

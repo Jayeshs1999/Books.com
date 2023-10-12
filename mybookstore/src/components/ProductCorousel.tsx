@@ -9,7 +9,7 @@ const ProductCorousel = () => {
   return isLoading ? (
     <></>
   ) : error ? (
-    <Message variant="danger">Failed to load Corousel</Message>
+    <Message variant="danger">Failed to load Corousel, Please refresh the page</Message>
   ) : (
     <Carousel pause="hover" className="bg-primary mb-4">
       {products &&

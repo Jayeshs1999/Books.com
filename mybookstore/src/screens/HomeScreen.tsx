@@ -33,7 +33,7 @@ const HomeScreen = () => {
         {isLoading ? (
           <Loader />
         ) : error ? (
-          <Message variant='danger'>No Data Found</Message>
+          <Message variant='danger'>Something went wrong, Please refresh the page</Message>
         ) : (
           <>
             <h1>Latest Products</h1>
