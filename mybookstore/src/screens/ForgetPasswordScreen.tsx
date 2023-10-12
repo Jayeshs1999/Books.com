@@ -60,6 +60,7 @@ const ForgetPasswordScreen = () => {
           <FormGroup controlId="email" className="my-3">
             <Form.Label>Email Address</Form.Label>
             <Form.Control
+              readOnly={checkEmail}
               type="email"
               placeholder="Enter email"
               value={email}
