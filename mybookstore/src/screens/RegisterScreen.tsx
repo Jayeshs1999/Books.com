@@ -104,6 +104,7 @@ const RegisterScreen = () => {
     // For this example, we assume the correct code is "1234"
     if (verificationCode === originalKey) {
       toast.success("OTP Verified Successfully!");
+      localStorage.removeItem("bookBucketId");
       setIsVerificationCodeCorrect(true);
       try {
         const res = await register({ name, email, password }).unwrap();

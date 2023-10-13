@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import generateOTP from '../utils/generateOtp';
+import CryptoJS from "crypto-js";
+import sendEmail from '../utils/sendEmail';
 
 const ForgetPasswordScreen = () => {
   const [email, setEmail] = useState("");
@@ -15,6 +18,7 @@ const ForgetPasswordScreen = () => {
   const navigate = useNavigate();
   const [isFormDateDisabled, setIsFormDateDisabled] = useState(true);
   const passwordPattern = /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[\W_]).{8,}$/;
+  const [verificationCode, setVerificationCode] = useState("");
 
   const [checkUserExist, {isLoading,error}] = useCheckUserExistMutation();
   const [forgetPassword, {isLoading: submitButtonLoading,error:forgetPasswordError}] = useForgetPasswordMutation();
@@ -23,6 +27,29 @@ const ForgetPasswordScreen = () => {
     const checkEmail = await checkUserExist({email}).unwrap();
     if(checkEmail.email!==''){
       setCheckEmail(true)
+      const otp = generateOTP();
+      const ciphertext = CryptoJS.AES.encrypt(
+        String(otp),
+        `${process.env.ENCRYPTION_KEY}`
+      ).toString();
+      localStorage.setItem("forgetPasswordOtp", ciphertext);
+      const otpSendSuccessfully = sendEmail({
+        name:'Dear',
+        email: email,
+        senderName: "BookBucket",
+        titleMessage: "BookBucket Verify OTP",
+        message: "Please Confirm OTP",
+        subMessage: "",
+        otp: otp,
+        currentDate: "",
+        paymentMethod: "",
+        shippingAddress: "",
+      });
+      if ((await otpSendSuccessfully).status) {
+        toast.success("OTP Sent Successfully");
+      }else {
+        toast.error("OTP Sent Failed");
+      }
     }else {
       setCheckEmail(false)
     }
@@ -30,13 +57,25 @@ const ForgetPasswordScreen = () => {
 
   const handleUpdatePassword = async (e:any) => {
     e.preventDefault();
+     //deycrypt id using private key
+     const bytes = CryptoJS.AES.decrypt(
+      String(localStorage.getItem("forgetPasswordOtp")),
+      `${process.env.ENCRYPTION_KEY}`
+    );
+    const originalKey = bytes.toString(CryptoJS.enc.Utf8);
     if(password.match(passwordPattern)) {
-      try {
-        await forgetPassword({email,password})
-        toast.success("Password change successfully")
-        navigate('/login')
-      }catch(error) {
-        toast.error("Something went wrong")
+      if(verificationCode===originalKey){
+        try {
+          await forgetPassword({email,password})
+          toast.success("Password change successfully")
+          localStorage.removeItem('forgetPasswordOtp')
+          navigate('/login')
+        }catch(error) {
+          toast.error("Something went wrong")
+        }
+
+      }else {
+        toast.error("Please Enter valid OTP")
       }
     }else {
         toast.error("Password should contain 0-9,a-z,!,@,# ")
@@ -49,7 +88,7 @@ const ForgetPasswordScreen = () => {
     } else {
       setIsFormDateDisabled(true);
     }
-  }, [email, password]);
+  }, [email, password, verificationCode]);
 
   return (
     <FormContainer comesfrom='true'>
@@ -68,7 +107,19 @@ const ForgetPasswordScreen = () => {
             />
           </FormGroup>
 
-          {checkEmail && <><FormGroup controlId="password" className="my-3">
+          {checkEmail && <>
+            <Form.Group controlId="verificationCode">
+            <Form.Label style={{color:'green', fontWeight:'bold'}}>OTP sended to your email account</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter code"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    maxLength={4}
+                  />
+                </Form.Group>
+          
+          <FormGroup controlId="password" className="my-3">
             <Form.Label>Add new password</Form.Label>
             <Form.Control
               type="password"
