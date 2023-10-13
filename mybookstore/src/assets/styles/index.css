@@ -83,3 +83,21 @@ table th {
   width: 100%;
   height: 100%;
 }
+
+.card-background-gradient {
+  background-color: #f0f0f0;
+background-image: linear-gradient(62deg, #f0f0f0 0%, #E0C3FC 100%);
+
+}
+
+.card-background-gradient:hover {
+  background-color: #85FFBD;
+  background-image: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
+}
+
+.carousel-background {
+  background-color: #0c0607;
+background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+
+  
+}

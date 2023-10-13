@@ -6,7 +6,7 @@ import Rating from "./Rating";
 const Product = ({ product }: any) => {
   return (
     <div>
-      <Card className="my-3 p-3 rounded" style={{display:'flex', flexDirection:'column', height:'100%'}}>
+      <Card className="my-3 p-3 rounded card-background-gradient" style={{display:'flex', flexDirection:'column', height:'100%'}}>
         <div>
         <Link to={`/product/${product._id}`}>
           <Card.Img src={product.image} variant="top" style={{width:'100%', height:'200px', objectFit:'contain', borderRadius: '8px'}}></Card.Img>
