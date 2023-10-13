@@ -13,8 +13,9 @@ import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
-import { ref ,uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import storage from "../../utils/firebase";
+import categories from "../../utils/objects";
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -23,11 +24,11 @@ const ProductEditScreen = () => {
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
   const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [loader, setLoader] = useState(false);
-  const [imageURL, setImageURL] = useState('');
+  const [imageURL, setImageURL] = useState("");
+  const [category, setCategory] = useState("DefaultCategory");
 
   const {
     data: product,
@@ -62,11 +63,12 @@ const ProductEditScreen = () => {
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
+    console.log(category);
     const updatedProduct = {
       _id: productId,
       name,
       price,
-      image:imageURL,
+      image: imageURL || image,
       brand,
       category,
       countInStock,
@@ -82,35 +84,35 @@ const ProductEditScreen = () => {
     }
   };
 
-  const uploadFileHandler = async (e:any) => {
-    if(image) {
-      console.log("yes :",e.target.files[0])
-      console.log("image.name:",e.target.files[0].name)
+  const uploadFileHandler = async (e: any) => {
+    if (image) {
+      console.log("yes :", e.target.files[0]);
+      console.log("image.name:", e.target.files[0].name);
       try {
-        setLoader(true)
+        setLoader(true);
         const storageRef = ref(storage, `images/${e.target.files[0].name}`);
         await uploadBytes(storageRef, e.target.files[0]);
         const downloadURL = await getDownloadURL(storageRef);
-        console.log('Image uploaded and available at', downloadURL);
+        console.log("Image uploaded and available at", downloadURL);
         setImageURL(downloadURL);
-        if(downloadURL){
-          toast.success("Image uploaded successfully!")
+        if (downloadURL) {
+          toast.success("Image uploaded successfully!");
         }
-        setLoader(false)
+        setLoader(false);
       } catch (error) {
-        toast.error("Something went wrong")
+        toast.error("Something went wrong");
       }
-    }else {
-     toast.success("No Image found")
+    } else {
+      toast.success("No Image found");
     }
-  }
+  };
 
   return (
     <>
       <Link to={"/admin/productlist"} className="btn btn-light my-3">
         Go Back
       </Link>
-      <FormContainer comesfrom='false'>
+      <FormContainer comesfrom="false">
         <h1>Edit Profile</h1>
         {loadingUpdate && <Loader />}
         {isLoading ? (
@@ -177,7 +179,7 @@ const ProductEditScreen = () => {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId="category" className="my-2">
+            {/* <Form.Group controlId="category" className="my-2">
               <Form.Label>Category</Form.Label>
               <Form.Control
                 type="text"
@@ -185,18 +187,34 @@ const ProductEditScreen = () => {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               ></Form.Control>
+            </Form.Group> */}
+
+            <Form.Group controlId="category" className="my-2">
+              <Form.Label>Select Category</Form.Label>
+              <Form.Control
+                as="select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {categories.map((x) => (
+                  <option key={x.name} value={x.name}>
+                    {x.name}
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
 
             <Form.Group controlId="description" className="my-2">
               <Form.Label>Description</Form.Label>
               <Form.Control
-                type="text"
+                as="textarea" // Set "as" prop to "textarea"
+                rows={3} // Specify the number of visible rows (adjust as needed)
                 placeholder="Enter Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Button type="submit" variant="primary">
+            <Button className="mt-2" type="submit" variant="primary">
               Update
             </Button>
           </Form>

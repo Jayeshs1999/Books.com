@@ -8,13 +8,17 @@ const getProducts =asyncHandler( async (req,res)=>{
     const pageSize = process.env.PAGINATION_LIMIT;
     const page = Number(req.query.pageNumber) || 1;
 
+    const category = req.query.category;
     const  keyword = req.query.keyword ? {name: {$regex: req.query.keyword, $options: 'i'}} : {}
-    const count =await Product.countDocuments({...keyword});
+    const categoryFilter = category ? { category } : {};
+    const count = await Product.countDocuments({ ...keyword, ...categoryFilter });
+    
 
-    const products = await Product.find({...keyword}).limit(pageSize)
-    .skip(pageSize * (page - 1)).sort({ updatedAt: -1 });
+    const products = await Product.find({ ...keyword, ...categoryFilter })
+        .limit(pageSize)
+        .skip(pageSize * (page - 1))
+        .sort({ updatedAt: -1 });
     res.json({products, page, pages: Math.ceil(count/pageSize)  });
-
 })
 
 

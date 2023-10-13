@@ -10,6 +10,7 @@ import { logout } from "../slices/authSlice";
 import SearchBox from "./SearchBox";
 import { resetCart } from "../slices/cartSlice";
 import scrollToTop from "../utils/moveToTop";
+import categories from "../utils/objects";
 
 const Header = () => {
   const { cartItems } = useSelector((state: any) => state.cart);
@@ -24,7 +25,7 @@ const Header = () => {
     try {
       await logoutApiCall("").unwrap();
       dispatch(logout(""));
-      dispatch(resetCart())
+      dispatch(resetCart());
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -32,27 +33,47 @@ const Header = () => {
   };
   return (
     <header className="sticky-header">
-      <Navbar bg="primary" className="navbar-bg-color" variant="dark" expand="md" collapseOnSelect>
+      <Navbar
+        bg="primary"
+        className="navbar-bg-color"
+        variant="dark"
+        expand="md"
+        collapseOnSelect
+      >
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand className="domain-font">
               <img width={"50px"} src={logo} alt="abs" />
-                &nbsp; BookBucket
+              &nbsp; BookBucket
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle area-aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <SearchBox />
+
+              <NavDropdown
+                title="Select Category"
+                id="adminmenu"
+                style={{ zIndex: "999" }}
+              >
+                <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                  {categories &&
+                    categories.map((category: any) => (
+                      <>
+                        <LinkContainer to={`category/${category.name}`}>
+                          <NavDropdown.Item>{category.name}</NavDropdown.Item>
+                        </LinkContainer>
+                      </>
+                    ))}
+                </div>
+              </NavDropdown>
+
               <LinkContainer to="/">
-                <Nav.Link>
-                  Home
-                </Nav.Link>
+                <Nav.Link>Home</Nav.Link>
               </LinkContainer>
               <LinkContainer to="/aboutus" onClick={scrollToTop}>
-                <Nav.Link>
-                  About Us
-                </Nav.Link>
+                <Nav.Link>About Us</Nav.Link>
               </LinkContainer>
               <LinkContainer to="/cart">
                 <Nav.Link>
@@ -83,7 +104,7 @@ const Header = () => {
                 </LinkContainer>
               )}
               {userInfo && userInfo.isAdmin && (
-                <NavDropdown title='Admin' id="adminmenu">
+                <NavDropdown title="Admin" id="adminmenu">
                   <LinkContainer to="/admin/productlist">
                     <NavDropdown.Item>Products</NavDropdown.Item>
                   </LinkContainer>

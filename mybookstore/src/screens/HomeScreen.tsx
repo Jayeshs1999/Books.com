@@ -11,50 +11,63 @@ import { useSelector } from "react-redux";
 import OnlineStatusChecker from "../utils/OnlineStatusChecker";
 
 const HomeScreen = () => {
+  const { pageNumber, keyword, categoryName } = useParams();
 
-  const {pageNumber, keyword} = useParams();
-
-  const {data, isLoading, error ,isFetching} = useGetProductsQuery({keyword, pageNumber});
-  const {isOnline} = useSelector((state:any)=> state.status);
+  const { data, isLoading, error, isFetching } = useGetProductsQuery({
+    keyword,
+    pageNumber,
+    categoryName,
+  });
+  const { isOnline } = useSelector((state: any) => state.status);
   return (
     <>
-    {!isOnline ? (
-      <OnlineStatusChecker />
-    ) : (
-      <>
+      {!isOnline ? (
         <OnlineStatusChecker />
-        {!keyword ? (
-          <ProductCorousel />
-        ) : (
-          <Link to={'/'} className="btn btn-light mb-4">
-            Go Back
-          </Link>
-        )}
-        {isLoading || isFetching ? (
-          <Loader />
-        ) : error ? (
-          <Message variant='danger'>Something went wrong, Please refresh the page</Message>
-        ) : (
-          <>
-            <h1>Latest Products</h1>
-            <Row>
-              {data.products && data.products.map((product:any) => (
-                <Col key={product && product['_id']} sm={12} md={6} lg={4} xl={3}>
-                  <Product product={product} />
-                </Col>
-              ))}
-            </Row>
-            <Paginate
-              comesFrom="productsScreen"
-              pages={data.pages}
-              page={data.page}
-              keyword={keyword ? keyword : ''}
-            />
-          </>
-        )}
-      </>
-    )}
-  </>
+      ) : (
+        <>
+          <OnlineStatusChecker />
+          {!keyword && !categoryName ? (
+            <ProductCorousel />
+          ) : (
+            <Link to={"/"} className="btn btn-light mb-4">
+              Go Back
+            </Link>
+          )}
+          {isLoading || isFetching ? (
+            <Loader />
+          ) : error ? (
+            <Message variant="danger">
+              Something went wrong, Please refresh the page
+            </Message>
+          ) : (
+            <>
+              <h1>Latest Products</h1>
+              <Row>
+                {data.products &&
+                  data.products.map((product: any) => (
+                    <Col
+                      key={product && product["_id"]}
+                      sm={12}
+                      md={6}
+                      lg={4}
+                      xl={3}
+                    >
+                      <Product product={product} />
+                    </Col>
+                  ))}
+              </Row>
+              <Paginate
+                comesFrom="productsScreen"
+                pages={data.pages}
+                page={data.page}
+                keyword={keyword ? keyword : ""}
+                category={categoryName ? categoryName : ""}
+              />
+            </>
+          )}
+        </>
+      )}
+    </>
   );
 };
 
