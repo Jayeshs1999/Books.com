@@ -13,7 +13,7 @@ const ProductCorousel = () => {
       Failed to load Corousel, Please refresh the page
     </Message>
   ) : (
-    <Carousel pause="hover" className="bg-primary mb-4">
+    <Carousel pause="hover" className="bg-error mb-4 carousel-background">
       {products &&
         products.map((product: any) => (
           <Carousel.Item key={product._id} className="custom-carousel-item">
