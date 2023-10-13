@@ -69,7 +69,7 @@ table th {
   top: 0;
   width: 100%;
   background-color: #fff; /* Add your desired background color */
-  z-index: 1000; /* Adjust the z-index to control the stacking order */
+  z-index: 500; /* Adjust the z-index to control the stacking order */
   /* Add any other styles you want for the sticky header */
 }
 .carousel-item {
