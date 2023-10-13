@@ -39,7 +39,7 @@ const LoginScreen = () => {
   };
 
   return (
-    <FormContainer>
+    <FormContainer comesfrom='true'>
       <Card className="mt-5" style={{ display: "flex", borderRadius: "10px" }}>
         <Card.Body>
           <h1 className="text-center">Sign In</h1>

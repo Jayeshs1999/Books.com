@@ -52,7 +52,7 @@ const ShippingScreen = () => {
       <Link to="/" className="btn btn-light my-3">
         Go To Home
       </Link>
-      <FormContainer>
+      <FormContainer comesfrom='false'>
         <CheckoutSteps step1 step2 />
         <h1>Shipping Address</h1>
         <Form onSubmit={submitHandler}>

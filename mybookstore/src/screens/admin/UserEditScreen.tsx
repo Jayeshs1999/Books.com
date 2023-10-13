@@ -51,7 +51,7 @@ const UserEditScreen= () => {
       <Link to={"/admin/userlist"} className="btn btn-light my-3">
         Go Back
       </Link>
-      <FormContainer>
+      <FormContainer comesfrom='false'>
         <h1>Edit User</h1>
         {loadingUpdate && <Loader />}
         {isLoading ? (

@@ -6,7 +6,12 @@ import image3 from '../assets/bg1.jpg';
 import image4 from '../assets/bg2.jpg';
 import image5 from '../assets/bg3.jpg';
 
-const FormContainer = ({children} :any) => {
+interface FormContainerProps {
+  children: any;
+  comesfrom: string;
+}
+
+const FormContainer = ({children, comesfrom} :FormContainerProps) => {
   const [backgroundImage, setBackgroundImage] = useState('../assets/booksbackground.jpg');
   const backgroundImages = [
     image,
@@ -28,8 +33,12 @@ const FormContainer = ({children} :any) => {
     return () => clearInterval(interval);
   }, []);
   return (
-    <Container  style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', borderRadius:'10px'}}>
-        <Row className='justify-content-md-center pb-5'>
+    <Container style={{
+      backgroundImage: comesfrom==='true' ? `url(${backgroundImage})`: '', 
+      backgroundSize: comesfrom==='true' ?  'cover': '', 
+      borderRadius: comesfrom==='true' ? '10px' : '',
+    }}>
+        <Row className='justify-content-md-center' style={{paddingBottom:comesfrom==='true'? '40px':''}}>
             <Col xs={12} md={6}>
                 {children}
             </Col>        
