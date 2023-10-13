@@ -14,7 +14,7 @@ const HomeScreen = () => {
 
   const {pageNumber, keyword} = useParams();
 
-  const {data, isLoading, error} = useGetProductsQuery({keyword, pageNumber});
+  const {data, isLoading, error ,isFetching} = useGetProductsQuery({keyword, pageNumber});
   const {isOnline} = useSelector((state:any)=> state.status);
   return (
     <>
@@ -30,7 +30,7 @@ const HomeScreen = () => {
             Go Back
           </Link>
         )}
-        {isLoading ? (
+        {isLoading || isFetching ? (
           <Loader />
         ) : error ? (
           <Message variant='danger'>Something went wrong, Please refresh the page</Message>
@@ -45,6 +45,7 @@ const HomeScreen = () => {
               ))}
             </Row>
             <Paginate
+              comesFrom="productsScreen"
               pages={data.pages}
               page={data.page}
               keyword={keyword ? keyword : ''}
