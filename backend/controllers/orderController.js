@@ -156,7 +156,7 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 //@route GET /api/orders
 //@access Private/admin
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({}).populate('user','id name')
+  const orders = await Order.find({}).populate('user','id name').sort({ updatedAt: -1 });
   res.status(200).json(orders)
 });
 
