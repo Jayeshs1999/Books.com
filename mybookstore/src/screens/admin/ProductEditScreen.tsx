@@ -13,6 +13,8 @@ import { Button, Form } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
+import { ref ,uploadBytes, getDownloadURL } from 'firebase/storage';
+import storage from "../../utils/firebase";
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -24,6 +26,8 @@ const ProductEditScreen = () => {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [loader, setLoader] = useState(false);
+  const [imageURL, setImageURL] = useState('');
 
   const {
     data: product,
@@ -62,7 +66,7 @@ const ProductEditScreen = () => {
       _id: productId,
       name,
       price,
-      image,
+      image:imageURL,
       brand,
       category,
       countInStock,
@@ -79,15 +83,25 @@ const ProductEditScreen = () => {
   };
 
   const uploadFileHandler = async (e:any) => {
-    const formData = new FormData();
-    formData.append('image',e.target.files[0])
-
-    try {
-      const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message)
-      setImage(res.image);
-    }catch(error) {
-      toast.error("Error in product edit screen")
+    if(image) {
+      console.log("yes :",e.target.files[0])
+      console.log("image.name:",e.target.files[0].name)
+      try {
+        setLoader(true)
+        const storageRef = ref(storage, `images/${e.target.files[0].name}`);
+        await uploadBytes(storageRef, e.target.files[0]);
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log('Image uploaded and available at', downloadURL);
+        setImageURL(downloadURL);
+        if(downloadURL){
+          toast.success("Image uploaded successfully!")
+        }
+        setLoader(false)
+      } catch (error) {
+        toast.error("Something went wrong")
+      }
+    }else {
+     toast.success("No Image found")
     }
   }
 
@@ -96,7 +110,7 @@ const ProductEditScreen = () => {
       <Link to={"/admin/productlist"} className="btn btn-light my-3">
         Go Back
       </Link>
-      <FormContainer>
+      <FormContainer comesfrom='false'>
         <h1>Edit Profile</h1>
         {loadingUpdate && <Loader />}
         {isLoading ? (
@@ -130,6 +144,7 @@ const ProductEditScreen = () => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="text"
+                readOnly
                 placeholder="Enter Image URL"
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
@@ -140,7 +155,7 @@ const ProductEditScreen = () => {
                 onChange={uploadFileHandler}
               ></Form.Control>
             </Form.Group>
-            {loadingUpload && <Loader />}
+            {loader && <Loader />}
 
             <Form.Group controlId="brand" className="my-2">
               <Form.Label>Brand</Form.Label>
