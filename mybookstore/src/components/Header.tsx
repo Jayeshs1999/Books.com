@@ -48,6 +48,11 @@ const Header = () => {
                   Home
                 </Nav.Link>
               </LinkContainer>
+              <LinkContainer to="/aboutus">
+                <Nav.Link>
+                  About Us
+                </Nav.Link>
+              </LinkContainer>
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <FaShoppingCart />

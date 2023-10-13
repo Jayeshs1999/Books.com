@@ -32,6 +32,7 @@ import UserListScreen from "./screens/admin/UserListScreen";
 import UserEditScreen from "./screens/admin/UserEditScreen";
 import { HelmetProvider } from "react-helmet-async";
 import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
+import AboutUs from "./screens/AboutUs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -46,6 +47,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/forgetpassword" element={<ForgetPasswordScreen />} />
+      <Route path="/aboutus" element={<AboutUs />} />
 
       {/*is any route make Private take it  here  */}
       <Route path="" element={<PrivateRoute />}>
