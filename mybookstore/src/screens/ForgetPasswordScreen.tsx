@@ -51,6 +51,7 @@ const ForgetPasswordScreen = () => {
         toast.error("OTP Sent Failed");
       }
     }else {
+      toast.error("Email does not exists")
       setCheckEmail(false)
     }
   }
