@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import {
   useDeliverOrderMutation,
@@ -19,15 +19,11 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
 import sendEmail from "../utils/sendEmail";
+import GreetingDialog from "../utils/GreetingDialog";
+import moveToTop from "../utils/moveToTop";
 
 const OrderScreen = () => {
   const apiKey = process.env.REACT_APP_PUBLIC_ID;
-
-  // enum SCRIPT_LOADING_STATE {
-  //   PENDING = 'pending',
-  //   LOADED = 'loaded',
-  //   ERROR = 'error',
-  // }
   const { id: orderId } = useParams();
   const {
     data: order,
@@ -40,6 +36,7 @@ const OrderScreen = () => {
   const [deliverOrder, { isLoading: loadingDeliver }] =
     useDeliverOrderMutation();
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const {
     data: paypal,
     isLoading: loadingPaypal,
@@ -74,11 +71,13 @@ const OrderScreen = () => {
 
   async function onApproveTest(e:any) {
     e.preventDefault();
-    const isPaidSuccessfully = await payOrder({ orderId, details: { email_address: userInfo.email , payer: {} } });
-    localStorage.removeItem('cart')
-    refetch();
-    toast.success("Payment successful");
     try {
+      const isPaidSuccessfully = await payOrder({ orderId, details: { email_address: userInfo.email , payer: {} } });
+      localStorage.removeItem('cart')
+      refetch();
+      toast.success("Order Confirmed !");
+      moveToTop();
+      setShowVerificationPopup(true);
       if('data' in isPaidSuccessfully) {
         const updatedData = isPaidSuccessfully && isPaidSuccessfully?.data?.updatedAt;
         const paymentMethod =  'Cash On Delivery';
@@ -271,7 +270,7 @@ const OrderScreen = () => {
                         onClick={(e)=> onApproveTest(e)}
                         style={{ marginBottom: "10px" }}
                       >
-                        Cash On Delivery Pay Order
+                        Cash On Delivery book Order
                       </Button>
                       {/* <div>
                         <PayPalButtons
@@ -304,6 +303,7 @@ const OrderScreen = () => {
           </Card>
         </Col>
       </Row>
+      {showVerificationPopup && <GreetingDialog message="Congratulation!" handleDialog={(e:any)=>setShowVerificationPopup(false)}/>}
     </>
   );
 };

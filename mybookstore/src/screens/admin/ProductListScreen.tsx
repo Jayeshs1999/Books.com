@@ -11,7 +11,7 @@ import Paginate from '../../components/Paginate';
 
 const ProductListScreen = () => {
     const  {pageNumber} = useParams();
-    const {data, isLoading, refetch, error} = useGetProductsQuery({pageNumber});
+    const {data, isLoading, refetch, error, isFetching} = useGetProductsQuery({pageNumber});
     const [createProduct, {isLoading: loadingCreate}] = useCreateProductMutation();
     const [deleteProduct, {isLoading:loadingDelete }] = useDeleteProductMutation();
 
@@ -57,7 +57,7 @@ const ProductListScreen = () => {
     {loadingCreate && <Loader />}
     {loadingDelete && <Loader />}
 
-    {isLoading ? <Loader /> : error? <Message variant='danger'>{error}</Message>: (
+    {isLoading || isFetching ? <Loader /> : error? <Message variant='danger'>{error}</Message>: (
             <>
             <Table striped hover responsive className='table-sm'>
                 <thead>
@@ -96,7 +96,7 @@ const ProductListScreen = () => {
                 </tbody>
                 
             </Table>
-            <Paginate page={data.page} pages={data.pages} isAdmin={true} />
+            <Paginate page={data.page} pages={data.pages} isAdmin={true} comesFrom='productlist' />
             </>
         ) }
     </>

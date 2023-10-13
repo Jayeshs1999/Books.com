@@ -45,9 +45,12 @@ export const orderAPISlice = apiSlice.injectEndpoints({
         }),
 
         getOrders: builder.query({
-            query: () => ({
+            query: (pageNumber) => ({
                 url: `${ORDERS_URL}`,
                 method: 'GET',
+                params: {
+                    pageNumber
+                }
             }),
             keepUnusedDataFor:5
         }),

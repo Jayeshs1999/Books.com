@@ -151,7 +151,7 @@ const PlaceOrdersScreen = () => {
                         <Button 
                         type="button"
                         className="btn-block"
-                        disabled={cart.cartItems.length === 0}
+                        disabled={cart.cartItems.length === 0 || isLoading}
                         onClick={placeOrderHandler}
                         >
                         Proceed
