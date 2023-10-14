@@ -13,14 +13,28 @@ const getProducts =asyncHandler( async (req,res)=>{
     const categoryFilter = category ? { category } : {};
     const count = await Product.countDocuments({ ...keyword, ...categoryFilter });
     
-
+    const randomSeed = new Date().getTime();
     const products = await Product.find({ ...keyword, ...categoryFilter })
         .limit(pageSize)
         .skip(pageSize * (page - 1))
-        .sort({ updatedAt: -1 });
-    res.json({products, page, pages: Math.ceil(count/pageSize)  });
-})
+        .lean() // Convert documents to plain JavaScript objects
 
+    // Randomize the order of products using Fisher-Yates shuffle
+    const randomizedProducts = fisherYatesShuffle(products);
+
+    res.json({products:randomizedProducts, page, pages: Math.ceil(count/pageSize)  });
+});
+function fisherYatesShuffle(arr) {
+    const shuffledArray = [...arr];
+
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        // Swap elements at i and j
+        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
+    }
+
+    return shuffledArray;
+}
 
 //@desc Fetch products by id
 //@route GET /api/products/:id
