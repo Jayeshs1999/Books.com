@@ -6,8 +6,10 @@ import { useNavigate } from "react-router";
 import { saveShippingAddress } from "../slices/cartSlice";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ShippingScreen = () => {
+  const digitPattern = /^\d*$/;
   const [isContinueButtonDisabled, setIsContinueButtonDisabled] =
     useState(true);
   const countries = [{ name: "India", value: "India" }];
@@ -18,6 +20,7 @@ const ShippingScreen = () => {
 
   const [address, setAddress] = useState(shippingAddress?.address || "");
   const [city, setCity] = useState(shippingAddress?.city || "Pune");
+  const [phoneNumber, setPhoneNumber] = useState(shippingAddress?.phoneNumber || "")
   const [postalCode, setPostalCode] = useState(
     shippingAddress?.postalCode || ""
   );
@@ -25,27 +28,43 @@ const ShippingScreen = () => {
   const [state, setState] = useState(shippingAddress?.state || "Maharashtra");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const submitHandler = (e: any) => {
-    e.preventDefault();
-    dispatch(
-      saveShippingAddress({ address, city, postalCode, country, state })
-    );
-    navigate("/payment");
-  };
   useEffect(() => {
     if (
       address !== "" &&
       city !== "" &&
       postalCode !== "" &&
       country !== "" &&
-      state !== ""
+      state !== "" && phoneNumber!==""
     ) {
       setIsContinueButtonDisabled(false);
     } else {
       setIsContinueButtonDisabled(true);
     }
-  }, [address, city, state, postalCode,country]);
+  }, [address, city, state, postalCode,country,phoneNumber]);
+
+  const handlePhoneNumberChange = (e:any) => {
+    const value = e.target.value;
+    
+    // Use a regular expression to match only digits
+    const digitPattern = /^\d*$/;
+    
+    if (digitPattern.test(value) && value.length <= 10) {
+      // If it contains only digits and is 10 characters or fewer, update the state
+      setPhoneNumber(value);
+    }
+  };
+
+  const submitHandler = (e: any) => {
+    e.preventDefault();
+    if (digitPattern.test(phoneNumber) && phoneNumber.length === 10) {
+      dispatch(
+        saveShippingAddress({ address, city, postalCode, country, state, phoneNumber })
+      );
+      navigate("/payment");
+    }else {
+      toast.error("Phone Number is Invalid")
+    }
+  };
 
   return (
     <>
@@ -128,17 +147,15 @@ const ShippingScreen = () => {
               }}
             ></Form.Control>
           </Form.Group>
-          {/* <Form.Group controlId='country' className='my-2'>
-                <Form.Label>Country</Form.Label>
-                <Form.Control
-                type='text'
-                placeholder='Enter Country'
-                value={country}
-                onChange={(e)=>{setCountry(e.target.value)}}
-                >
-                </Form.Control>
-            </Form.Group> */}
-
+          <Form.Group controlId="phonenumber" className="my-2">
+            <Form.Label>Phone Number</Form.Label>
+            <Form.Control
+              type="number"
+              placeholder="Enter Phone Number"
+              value={phoneNumber}
+              onChange={handlePhoneNumberChange}
+            ></Form.Control>
+          </Form.Group>
           <Button
             type="submit"
             disabled={isContinueButtonDisabled}

@@ -59,12 +59,12 @@ const Header = () => {
               >
                 <div style={{ maxHeight: "300px", overflowY: "auto" }}>
                   {categories &&
-                    categories.map((category: any) => (
-                      <>
-                        <LinkContainer to={`category/${category.name}`}>
+                    categories.map((category: any,index) => (
+                      
+                        <LinkContainer key={index} to={`category/${category.name}`}>
                           <NavDropdown.Item>{category.name}</NavDropdown.Item>
                         </LinkContainer>
-                      </>
+                      
                     ))}
                 </div>
               </NavDropdown>
