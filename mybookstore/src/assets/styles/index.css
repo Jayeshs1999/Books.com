@@ -102,3 +102,12 @@ border-radius: 50px;
 overflow: hidden;
   
 }
+
+.user-carousel-background {
+  background-color: #0c0607;
+  background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+  border-radius: 50%;
+  overflow: hidden;
+  width: 68%;
+  
+}

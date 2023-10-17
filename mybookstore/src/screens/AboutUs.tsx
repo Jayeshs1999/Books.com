@@ -1,7 +1,30 @@
 import React from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Carousel, Image } from "react-bootstrap";
 
 const AboutUs = () => {
+  const developers = [
+    {
+      _id: 1,
+      name: "Jayesh Sevatkar",
+      position: "Founder, MERN Stack developer",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2Fimage.jpeg?alt=media&token=68e004c3-4070-449c-b4a6-1ed50a707f5c&_gl=1*279wwo*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzE5MDE5NC4xOC4xLjE2OTcxOTA0MTYuMjAuMC4w",
+    },
+    {
+      _id: 2,
+      name: "Dikshant Tirpude",
+      position: "Product Manager",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2FWhatsApp%20Image%202023-10-18%20at%2012.08.29%20AM.jpeg?alt=media&token=a1d11060-2611-42a0-a30b-1f37f010ae6a&_gl=1*21t2mg*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzU2Nzk1Ni4yMy4xLjE2OTc1Njc5ODkuMjcuMC4w",
+    },
+    // {
+    //   _id: 3,
+    //   name: "Jayesh Sevatkar",
+    //   position: "Founder, MERN Stack developer",
+    //   image:
+    //     "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2Fimage.jpeg?alt=media&token=68e004c3-4070-449c-b4a6-1ed50a707f5c&_gl=1*279wwo*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzE5MDE5NC4xOC4xLjE2OTcxOTA0MTYuMjAuMC4w",
+    // },
+  ];
   return (
     <section id="about-us">
       <Container>
@@ -16,16 +39,39 @@ const AboutUs = () => {
                 alignItems: "center",
               }}
             >
-              <img
+              {/* <img
                 src="https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2Fimage.jpeg?alt=media&token=68e004c3-4070-449c-b4a6-1ed50a707f5c&_gl=1*279wwo*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzE5MDE5NC4xOC4xLjE2OTcxOTA0MTYuMjAuMC4w" // Replace with your image URL
                 alt="About Us"
                 className="img-fluid rounded-circle"
                 style={{
                   boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.5)",
                 }}
-              />
-              <h4 className="pt-3">Founder</h4>
-              <h3>Jayesh k. Sevatkar</h3>
+              /> */}
+
+              <Carousel
+                pause="hover"
+              
+                className="bg-error mb-4 user-carousel-background"
+                style={{
+                  boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.5)",
+                }}
+              >
+                {developers.map((developer: any) => (
+                  <Carousel.Item
+                    key={developer._id}
+                    className="custom-carousel-item"
+                  >
+                    <Image
+                      src={developer.image}
+                      alt={developer.name}
+                      className="custom-image"
+                    />
+                    <Carousel.Caption className="carousel-caption">
+                      <h2>{developer.name}</h2>
+                    </Carousel.Caption>
+                  </Carousel.Item>
+                ))}
+              </Carousel>
             </div>
           </Col>
           <Col md={6}>
