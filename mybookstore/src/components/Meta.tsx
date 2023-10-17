@@ -1,7 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet-async'
 
-const Meta = ({title="Welcome to OldBookShop",description, keywords}:any) => {
+const Meta = ({title="Welcome to bookbucket",description, keywords}:any) => {
   return (
       <Helmet>
         <title>{title || 'BookBucket.in - Your Bookstore Destination | Buy and Sell Books'}</title>
