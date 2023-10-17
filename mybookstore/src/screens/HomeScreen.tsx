@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import ProductCorousel from "../components/ProductCorousel";
 import { useSelector } from "react-redux";
 import OnlineStatusChecker from "../utils/OnlineStatusChecker";
+import Meta from "../components/Meta";
 
 const HomeScreen = () => {
   const { pageNumber, keyword, categoryName } = useParams();
@@ -41,6 +42,7 @@ const HomeScreen = () => {
             </Message>
           ) : (
             <>
+              <Meta/>
               <h1>Latest Products</h1>
               <Row>
                 {data.products &&
