@@ -36,7 +36,7 @@ const AboutUs = () => {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
-                alignItems: "center",
+                // alignItems: "center",
               }}
             >
               {/* <img
@@ -67,7 +67,7 @@ const AboutUs = () => {
                       className="custom-image"
                     />
                     <Carousel.Caption className="carousel-caption">
-                      <h2>{developer.name}</h2>
+                      <h2>{developer.name} <br/><h4 style={{color: '#baf2ba'}}>{developer.position}</h4></h2>
                     </Carousel.Caption>
                   </Carousel.Item>
                 ))}
