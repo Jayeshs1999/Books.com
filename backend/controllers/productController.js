@@ -59,16 +59,26 @@ const getProductsById =asyncHandler( async (req,res)=>{
 //@route POST /api/products
 //@access Private/Admin
 const createProduct =asyncHandler( async (req,res)=>{
+    const  {
+        name, 
+        price, 
+        description, 
+        image, 
+        brand,
+        category,
+        countInStock,
+    } = req.body;
+    
     const product = new Product({
-        name: 'Sample name',
-        price: 0,
+        name: name,
+        price: price,
         user: req.user._id,
-        image: '/images/sample.jpg',
-        brand: 'Sample brand',
-        category: 'Sample category',
-        countInStock: 0,
+        image: image? image : 'https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2F26690.jpg?alt=media&token=91f701e4-4f9f-4552-9c40-fdc86f9e3f66&_gl=1*5qo2th*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzYyOTIzMy4yNC4xLjE2OTc2MjkyNjguMjUuMC4w',
+        brand: brand,
+        category: category,
+        countInStock: countInStock,
         numReviews: 0,
-        description: 'Sample description',
+        description: description,
     })
 
     const createProduct = await product.save();

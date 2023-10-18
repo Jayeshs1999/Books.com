@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
-import {
-  useGetProductDetailsQuery,
-  useUpdateProductMutation,
-} from "../../slices/productsAPISlice";
-import { Link } from "react-router-dom";
-import FormContainer from "../../components/FormContainer";
-import Loader from "../../components/Loader";
-import Message from "../../components/Message";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Modal } from "react-bootstrap";
+import Loader from "../components/Loader";
+import categories from "./objects";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import storage from "./firebase";
 import { toast } from "react-toastify";
-import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { SerializedError } from "@reduxjs/toolkit";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import storage from "../../utils/firebase";
-import categories from "../../utils/objects";
+import { useCreateProductMutation } from "../slices/productsAPISlice";
 
-const ProductEditScreen = () => {
-  const { id: productId } = useParams();
+const AddProducts = (props: any) => {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -26,94 +16,85 @@ const ProductEditScreen = () => {
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [loader, setLoader] = useState(false);
-  const [imageURL, setImageURL] = useState("");
+//   const [imageURL, setImageURL] = useState("");
   const [category, setCategory] = useState("DefaultCategory");
+  const [showButtonDisable, setShowButtonDisabled] = useState(true);
+  const [createProduct, { isLoading: loadingCreate }] =
+  useCreateProductMutation();
 
-  const {
-    data: product,
-    isLoading,
-    error,
-  } = useGetProductDetailsQuery(productId);
-
-  const [updateProduct, { isLoading: loadingUpdate }] =
-    useUpdateProductMutation();
-
-
-  const navigate = useNavigate();
+  const handleClosePopup = () => {
+    props.handleDialog(false);
+  };
   useEffect(() => {
-    if (product) {
-      setName(product.name);
-      setPrice(product.price);
-      setImage(product.image);
-      setBrand(product.brand);
-      setCategory(product.category);
-      setCountInStock(product.countInStock);
-      setDescription(product.description);
+    if (
+      name !== "" &&
+      price > 0 &&
+      brand !== "" &&
+      countInStock > 0 &&
+      description !== "" &&
+      category !== "" &&
+      image !== ""
+    ) {
+      setShowButtonDisabled(false);
+    } else {
+      setShowButtonDisabled(true);
     }
-  }, [product]);
+  }, [name, price, brand, countInStock, description, category, image]);
 
-  function hasError(
-    obj: any
-  ): obj is { error: FetchBaseQueryError | SerializedError } {
-    return "error" in obj;
-  }
+  const uploadFileHandler = async (e: any) => {
+      try {
+        setLoader(true);
+        const storageRef = ref(storage, `images/${e.target.files[0].name}`);
+        await uploadBytes(storageRef, e.target.files[0]);
+        const downloadURL = await getDownloadURL(storageRef);
+        // setImageURL(downloadURL);
+        setImage(downloadURL)
+        if (downloadURL) {
+          toast.success("Image uploaded successfully!");
+        }
+        setLoader(false);
+      } catch (error) {
+        setLoader(false);
+        toast.error("Something went wrong");
+      }
+  };
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
     console.log(category);
     const updatedProduct = {
-      _id: productId,
       name,
       price,
-      image: imageURL || image,
+      image: image,
       brand,
       category,
       countInStock,
       description,
     };
 
-    const result = await updateProduct(updatedProduct);
-    if (result && hasError(result)) {
-      toast.error("Error in product edit screen");
-    } else {
-      toast.success("Product updated");
-      navigate("/productlist");
-    }
-  };
-
-  const uploadFileHandler = async (e: any) => {
-    if (image) {
-      try {
-        setLoader(true);
-        const storageRef = ref(storage, `images/${e.target.files[0].name}`);
-        await uploadBytes(storageRef, e.target.files[0]);
-        const downloadURL = await getDownloadURL(storageRef);
-        setImageURL(downloadURL);
-        if (downloadURL) {
-          toast.success("Image uploaded successfully!");
-        }
-        setLoader(false);
-      } catch (error) {
-        toast.error("Something went wrong");
-      }
-    } else {
-      toast.success("No Image found");
+    const result = await createProduct(updatedProduct);
+    if(result) {
+        // navigate('/productlist')
+        props.handleDialog(false);
+        toast.success("Book added Successfully")
+        
+    }else {
+        toast.error("Something went wrong")
     }
   };
 
   return (
-    <>
-      <Link to={"/productlist"} className="btn btn-light my-3">
-        Go Back
-      </Link>
-      <FormContainer comesfrom="false">
-        <h1>Edit Product</h1>
-        {loadingUpdate && <Loader />}
-        {isLoading ? (
-          <Loader />
-        ) : error ? (
-          <Message>{error}</Message>
-        ) : (
+    <Modal
+      show={true}
+      onHide={handleClosePopup}
+      backdrop="static" // This prevents closing when clicking outside the modal
+      keyboard={false} // This prevents closing when pressing the Esc key
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Add Product</Modal.Title>
+      </Modal.Header>
+      <Modal.Body style={{ height: "30em", overflow: "auto" }}>
+        <>
           <Form onSubmit={submitHandler}>
             <Form.Group controlId="name">
               <Form.Label>Name</Form.Label>
@@ -173,16 +154,6 @@ const ProductEditScreen = () => {
               ></Form.Control>
             </Form.Group>
 
-            {/* <Form.Group controlId="category" className="my-2">
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
-            </Form.Group> */}
-
             <Form.Group controlId="category" className="my-2">
               <Form.Label>Select Category</Form.Label>
               <Form.Control
@@ -208,14 +179,29 @@ const ProductEditScreen = () => {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Button className="mt-2" type="submit" variant="primary">
-              Update
+            <Button
+              className="mt-2"
+              style={{marginRight:'10px'}}
+              disabled={showButtonDisable}
+              type="submit"
+              variant="primary"
+            >
+              Create
+            </Button>
+            <Button
+              className="mt-2"
+              type="button"
+              variant="outline-primary"
+              onClick={(e)=> props.handleDialog(false)}
+            >
+              Cancel
             </Button>
           </Form>
-        )}
-      </FormContainer>
-    </>
+          {loadingCreate && <Loader />}
+        </>
+      </Modal.Body>
+    </Modal>
   );
 };
 
-export default ProductEditScreen;
+export default AddProducts;

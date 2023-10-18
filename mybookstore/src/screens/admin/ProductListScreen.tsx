@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useCreateProductMutation,
   useGetProductsQuery,
@@ -15,9 +15,11 @@ import Paginate from "../../components/Paginate";
 import { useSelector } from "react-redux";
 import notfoundbooksicons from "../../assets/notfoundbooks.png";
 import { Link } from "react-router-dom";
+import AddProducts from "../../utils/AddProducts";
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const { userInfo } = useSelector((state: any) => state.auth);
   const { data, isLoading, refetch, error, isFetching } = useGetProductsQuery({
     pageNumber,
@@ -43,8 +45,7 @@ const ProductListScreen = () => {
   const createProductHandler = async () => {
     if (window.confirm("Are You sure you want to create a new product?")) {
       try {
-        await createProduct("");
-        refetch();
+        setShowVerificationPopup(true)
       } catch (err) {
         toast.error("Error in product list screen");
       }
@@ -87,7 +88,9 @@ const ProductListScreen = () => {
             >
               <img style={{ width: "25%" }} src={notfoundbooksicons} alt="" />
               <h2>Books Not Found</h2>
-              <span>Please click on <strong>"Create Books"</strong> to add your book</span>
+              <span>
+                Please click on <strong>"Create Books"</strong> to add your book
+              </span>
             </div>
           ) : (
             <>
@@ -99,7 +102,8 @@ const ProductListScreen = () => {
                     <th>PRICE</th>
                     <th>CATEGORY</th>
                     <th>BRAND</th>
-                    <th></th>
+                    <th>UPDATE</th>
+                    <th>DELETE</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,6 +122,8 @@ const ProductListScreen = () => {
                             <FaEdit />
                           </Button>
                         </LinkContainer>
+                      </td>
+                      <td>
                         <Button
                           variant="danger"
                           style={{ color: "white" }}
@@ -141,6 +147,7 @@ const ProductListScreen = () => {
           )}
         </>
       )}
+      {showVerificationPopup &&  <AddProducts handleDialog={()=>setShowVerificationPopup(false)}  />}
     </>
   );
 };
