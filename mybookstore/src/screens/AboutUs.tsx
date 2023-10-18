@@ -1,5 +1,6 @@
 import React from "react";
 import { Container, Row, Col, Carousel, Image } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const AboutUs = () => {
   const developers = [
@@ -29,6 +30,9 @@ const AboutUs = () => {
     <section id="about-us">
       <Container>
         <h2>About Us</h2>
+        <Link to={"/"} className="btn btn-light mb-3">
+        Go Back
+      </Link>
         <Row>
           <Col md={6}>
             <div
@@ -67,7 +71,7 @@ const AboutUs = () => {
                       className="custom-image"
                     />
                     <Carousel.Caption className="carousel-caption">
-                      <h2>{developer.name} <br/><h4 style={{color: '#baf2ba'}}>{developer.position}</h4></h2>
+                      <h2>{developer.name} <br/><span style={{color: '#baf2ba', fontSize:'26px'}}>{developer.position}</span></h2>
                     </Carousel.Caption>
                   </Carousel.Item>
                 ))}

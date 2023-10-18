@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useCreateProductMutation,
   useGetProductsQuery,
@@ -15,9 +15,11 @@ import Paginate from "../../components/Paginate";
 import { useSelector } from "react-redux";
 import notfoundbooksicons from "../../assets/notfoundbooks.png";
 import { Link } from "react-router-dom";
+import AddProducts from "../../utils/AddProducts";
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const { userInfo } = useSelector((state: any) => state.auth);
   const { data, isLoading, refetch, error, isFetching } = useGetProductsQuery({
     pageNumber,
@@ -43,8 +45,7 @@ const ProductListScreen = () => {
   const createProductHandler = async () => {
     if (window.confirm("Are You sure you want to create a new product?")) {
       try {
-        await createProduct("");
-        refetch();
+        setShowVerificationPopup(true)
       } catch (err) {
         toast.error("Error in product list screen");
       }
@@ -146,6 +147,7 @@ const ProductListScreen = () => {
           )}
         </>
       )}
+      {showVerificationPopup &&  <AddProducts handleDialog={()=>setShowVerificationPopup(false)}  />}
     </>
   );
 };

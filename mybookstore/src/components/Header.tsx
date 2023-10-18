@@ -37,7 +37,7 @@ const Header = () => {
         bg="primary"
         className="navbar-bg-color"
         variant="dark"
-        expand="md"
+        expand="xl"
         collapseOnSelect
       >
         <Container>
@@ -51,27 +51,26 @@ const Header = () => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <SearchBox />
-
+              <LinkContainer to="/">
+                <Nav.Link>Home</Nav.Link>
+              </LinkContainer>
               <NavDropdown
-                title="Select Category"
+                title="Categories"
                 id="adminmenu"
                 style={{ zIndex: "999" }}
               >
                 <div style={{ maxHeight: "300px", overflowY: "auto" }}>
                   {categories &&
-                    categories.map((category: any,index) => (
-                      
-                        <LinkContainer key={index} to={`category/${category.name}`}>
-                          <NavDropdown.Item>{category.name}</NavDropdown.Item>
-                        </LinkContainer>
-                      
+                    categories.map((category: any, index) => (
+                      <LinkContainer
+                        key={index}
+                        to={`category/${category.name}`}
+                      >
+                        <NavDropdown.Item>{category.name}</NavDropdown.Item>
+                      </LinkContainer>
                     ))}
                 </div>
               </NavDropdown>
-
-              <LinkContainer to="/">
-                <Nav.Link>Home</Nav.Link>
-              </LinkContainer>
               <LinkContainer to="/aboutus" onClick={scrollToTop}>
                 <Nav.Link>About Us</Nav.Link>
               </LinkContainer>
@@ -87,7 +86,7 @@ const Header = () => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo ? (
-                <NavDropdown title={userInfo.name} id="username">
+                <NavDropdown title={<FaUser />} id="username">
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>Profile & Orders</NavDropdown.Item>
                   </LinkContainer>
@@ -103,23 +102,24 @@ const Header = () => {
                   </Nav.Link>
                 </LinkContainer>
               )}
-                <NavDropdown title={userInfo?.isAdmin? 'Admin': 'Add Books'} id="adminmenu">
-                  <LinkContainer to="/productlist">
-                    <NavDropdown.Item>Products</NavDropdown.Item>
-                  </LinkContainer>
-                  {userInfo && userInfo.isAdmin && (
-                    <>
-                     <LinkContainer to="/admin/userlist">
-                    <NavDropdown.Item>Users</NavDropdown.Item>
-                  </LinkContainer>
-                  <LinkContainer to="/admin/orderlist">
-                    <NavDropdown.Item>Orders</NavDropdown.Item>
-                  </LinkContainer>
-               
-                    </>
-
-                  )}
-                   </NavDropdown>
+              <NavDropdown
+                title={userInfo?.isAdmin ? "Admin" : "Add Books"}
+                id="adminmenu"
+              >
+                <LinkContainer to="/productlist">
+                  <NavDropdown.Item>Products</NavDropdown.Item>
+                </LinkContainer>
+                {userInfo && userInfo.isAdmin && (
+                  <>
+                    <LinkContainer to="/admin/userlist">
+                      <NavDropdown.Item>Users</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/admin/orderlist">
+                      <NavDropdown.Item>Orders</NavDropdown.Item>
+                    </LinkContainer>
+                  </>
+                )}
+              </NavDropdown>
             </Nav>
           </Navbar.Collapse>
         </Container>
