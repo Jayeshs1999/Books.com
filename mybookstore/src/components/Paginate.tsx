@@ -25,6 +25,23 @@ const Paginate = ({
       behavior: "smooth", // for smooth scrolling
     });
   };
+
+  const generateTo = (x:any) => {
+    if (!isAdmin) {
+      if (keyword) {
+        return `/search/${keyword}/page/${x + 1}`;
+      } else if (category) {
+        return `/category/${category}/page/${x + 1}`;
+      } else if(comesFrom) {
+        return `/${comesFrom}/${x + 1}`;
+      } else {
+        return `/page/${x + 1}`;
+      }
+    } else {
+      return `/admin/${comesFrom}/${x + 1}`;
+    }
+  };
+
   return (
     <>
       {pages > 1 && (
@@ -33,13 +50,7 @@ const Paginate = ({
             <LinkContainer
               key={x + 1}
               to={
-                !isAdmin
-                  ? keyword
-                    ? `/search/${keyword}/page/${x + 1}`
-                    : category
-                    ? `/category/${category}/page/${x + 1}`
-                    : `/page/${x + 1}`
-                  : `/admin/${comesFrom}/${x + 1}`
+                generateTo(x)
               }
               onClick={scrollToTop}
             >

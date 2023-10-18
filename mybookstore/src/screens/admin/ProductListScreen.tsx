@@ -8,10 +8,12 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router';
 import Paginate from '../../components/Paginate';
+import { useSelector } from 'react-redux';
 
 const ProductListScreen = () => {
     const  {pageNumber} = useParams();
-    const {data, isLoading, refetch, error, isFetching} = useGetProductsQuery({pageNumber});
+    const {userInfo} = useSelector((state:any)=> state.auth);
+    const {data, isLoading, refetch, error, isFetching} = useGetProductsQuery({pageNumber, userId: !Boolean(userInfo.isAdmin)? userInfo._id: ''});
     const [createProduct, {isLoading: loadingCreate}] = useCreateProductMutation();
     const [deleteProduct, {isLoading:loadingDelete }] = useDeleteProductMutation();
 
@@ -96,7 +98,7 @@ const ProductListScreen = () => {
                 </tbody>
                 
             </Table>
-            <Paginate page={data.page} pages={data.pages} isAdmin={true} comesFrom='productlist' />
+            <Paginate page={data.page} pages={data.pages} isAdmin={false} comesFrom='productlist' />
             </>
         ) }
     </>
