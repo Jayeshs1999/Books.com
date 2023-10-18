@@ -59,7 +59,7 @@ const HomeScreen = () => {
                   ))}
               </Row>
               <Paginate
-                comesFrom="productsScreen"
+                comesFrom=""
                 pages={data.pages}
                 page={data.page}
                 keyword={keyword ? keyword : ""}

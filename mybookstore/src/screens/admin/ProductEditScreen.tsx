@@ -80,20 +80,17 @@ const ProductEditScreen = () => {
       toast.error("Error in product edit screen");
     } else {
       toast.success("Product updated");
-      navigate("/admin/productlist");
+      navigate("/productlist");
     }
   };
 
   const uploadFileHandler = async (e: any) => {
     if (image) {
-      console.log("yes :", e.target.files[0]);
-      console.log("image.name:", e.target.files[0].name);
       try {
         setLoader(true);
         const storageRef = ref(storage, `images/${e.target.files[0].name}`);
         await uploadBytes(storageRef, e.target.files[0]);
         const downloadURL = await getDownloadURL(storageRef);
-        console.log("Image uploaded and available at", downloadURL);
         setImageURL(downloadURL);
         if (downloadURL) {
           toast.success("Image uploaded successfully!");
@@ -109,7 +106,7 @@ const ProductEditScreen = () => {
 
   return (
     <>
-      <Link to={"/admin/productlist"} className="btn btn-light my-3">
+      <Link to={"/productlist"} className="btn btn-light my-3">
         Go Back
       </Link>
       <FormContainer comesfrom="false">

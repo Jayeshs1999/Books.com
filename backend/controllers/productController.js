@@ -1,5 +1,6 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModule.js";
+import fisherYatesShuffle from "../routes/suffleBooks.js";
 
 //@desc Fetch all products
 //@route GET /api/products
@@ -9,12 +10,25 @@ const getProducts =asyncHandler( async (req,res)=>{
     const page = Number(req.query.pageNumber) || 1;
 
     const category = req.query.category;
+    const user = req.query.userId;
     const  keyword = req.query.keyword ? {name: {$regex: req.query.keyword, $options: 'i'}} : {}
     const categoryFilter = category ? { category } : {};
-    const count = await Product.countDocuments({ ...keyword, ...categoryFilter });
-    
-    const randomSeed = new Date().getTime();
-    const products = await Product.find({ ...keyword, ...categoryFilter })
+
+    // Add userId filter if it is available in the request
+    const userIdFilter = user ? { user } : {};
+      // Combine all filters
+    const filters = { ...keyword, ...categoryFilter, ...userIdFilter };
+
+    const count = await Product.countDocuments(filters);
+    if(user) {
+        const products = await Product.find(filters)
+        .limit(pageSize)
+        .skip(pageSize * (page - 1))
+        .sort({ updatedAt: -1 });
+
+        res.json({products, page, pages: Math.ceil(count/pageSize)  });
+    }else {
+        const products = await Product.find(filters)
         .limit(pageSize)
         .skip(pageSize * (page - 1))
         .lean() // Convert documents to plain JavaScript objects
@@ -23,18 +37,9 @@ const getProducts =asyncHandler( async (req,res)=>{
     const randomizedProducts = fisherYatesShuffle(products);
 
     res.json({products:randomizedProducts, page, pages: Math.ceil(count/pageSize)  });
-});
-function fisherYatesShuffle(arr) {
-    const shuffledArray = [...arr];
-
-    for (let i = shuffledArray.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        // Swap elements at i and j
-        [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
     }
+});
 
-    return shuffledArray;
-}
 
 //@desc Fetch products by id
 //@route GET /api/products/:id
