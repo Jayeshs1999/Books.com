@@ -87,7 +87,9 @@ const ProductListScreen = () => {
             >
               <img style={{ width: "25%" }} src={notfoundbooksicons} alt="" />
               <h2>Books Not Found</h2>
-              <span>Please click on <strong>"Create Books"</strong> to add your book</span>
+              <span>
+                Please click on <strong>"Create Books"</strong> to add your book
+              </span>
             </div>
           ) : (
             <>
@@ -99,7 +101,8 @@ const ProductListScreen = () => {
                     <th>PRICE</th>
                     <th>CATEGORY</th>
                     <th>BRAND</th>
-                    <th></th>
+                    <th>UPDATE</th>
+                    <th>DELETE</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -118,6 +121,8 @@ const ProductListScreen = () => {
                             <FaEdit />
                           </Button>
                         </LinkContainer>
+                      </td>
+                      <td>
                         <Button
                           variant="danger"
                           style={{ color: "white" }}
