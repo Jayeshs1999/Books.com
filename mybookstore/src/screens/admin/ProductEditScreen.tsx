@@ -15,6 +15,7 @@ import { SerializedError } from "@reduxjs/toolkit";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import storage from "../../utils/firebase";
 import categories from "../../utils/objects";
+import PhoneInput from "react-phone-number-input";
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
@@ -28,6 +29,9 @@ const ProductEditScreen = () => {
   const [loader, setLoader] = useState(false);
   const [imageURL, setImageURL] = useState("");
   const [category, setCategory] = useState("DefaultCategory");
+  const [phoneNumber, setPhoneNumber] = useState<any>();
+  const [address, setAddress] = useState("");
+  const [showButtonDisable, setShowButtonDisabled] = useState(true);
 
   const {
     data: product,
@@ -37,7 +41,6 @@ const ProductEditScreen = () => {
 
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
-
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -49,8 +52,37 @@ const ProductEditScreen = () => {
       setCategory(product.category);
       setCountInStock(product.countInStock);
       setDescription(product.description);
+      setAddress(product.address);
     }
   }, [product]);
+
+  useEffect(() => {
+    if (
+      name !== "" &&
+      price > 0 &&
+      brand !== "" &&
+      countInStock > 0 &&
+      description !== "" &&
+      category !== "" &&
+      image !== "" &&
+      address !== "" &&
+      phoneNumber !== undefined
+    ) {
+      setShowButtonDisabled(false);
+    } else {
+      setShowButtonDisabled(true);
+    }
+  }, [
+    name,
+    price,
+    brand,
+    countInStock,
+    description,
+    category,
+    image,
+    address,
+    phoneNumber,
+  ]);
 
   function hasError(
     obj: any
@@ -70,14 +102,20 @@ const ProductEditScreen = () => {
       category,
       countInStock,
       description,
+      phoneNumber,
+      address,
     };
 
-    const result = await updateProduct(updatedProduct);
-    if (result && hasError(result)) {
-      toast.error("Error in product edit screen");
-    } else {
-      toast.success("Product updated");
-      navigate("/productlist");
+    if (phoneNumber.length === 13) {
+      const result = await updateProduct(updatedProduct);
+      if (result && hasError(result)) {
+        toast.error("Error in product edit screen");
+      } else {
+        toast.success("Product updated");
+        navigate("/productlist");
+      }
+    }else {
+      toast.error("Please Enter Valid Phone Number")
     }
   };
 
@@ -208,8 +246,47 @@ const ProductEditScreen = () => {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
-            <Button className="mt-2" type="submit" variant="primary">
+            <Form.Group controlId="phonenumber" className="my-2">
+              <Form.Label style={{ color: "red" }}>
+                If You Want To Change Phone Number
+              </Form.Label>
+              <PhoneInput
+                defaultCountry="IN"
+                placeholder="Enter phone number"
+                value={phoneNumber}
+                onChange={(e: any) => {
+                  setPhoneNumber(e);
+                }}
+              />
+            </Form.Group>
+            <Form.Group controlId="address" className="my-3">
+              <Form.Label>Pickup Address</Form.Label>
+              <Form.Control
+                as="textarea" // Set "as" prop to "textarea"
+                rows={3} // Specify the number of visible rows (adjust as needed)
+                placeholder="Enter Pickup Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Button
+              className="mt-2"
+              disabled={showButtonDisable}
+              type="submit"
+              variant="primary"
+            >
               Update
+            </Button>
+            <Button
+              className="mt-2"
+              style={{ marginLeft: "10px" }}
+              type="button"
+              variant="outline-primary"
+              onClick={() => {
+                navigate("/productlist");
+              }}
+            >
+              Cancel
             </Button>
           </Form>
         )}

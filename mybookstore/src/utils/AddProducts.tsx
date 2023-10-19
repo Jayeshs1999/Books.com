@@ -6,21 +6,24 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import storage from "./firebase";
 import { toast } from "react-toastify";
 import { useCreateProductMutation } from "../slices/productsAPISlice";
+import "react-phone-number-input/style.css";
+import PhoneInput from "react-phone-number-input";
 
 const AddProducts = (props: any) => {
-
+  const prevProductLocation = localStorage.getItem('product_added_location')
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
   const [brand, setBrand] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<any>();
+  const [address, setAddress] = useState(prevProductLocation? prevProductLocation :"");
   const [loader, setLoader] = useState(false);
-//   const [imageURL, setImageURL] = useState("");
   const [category, setCategory] = useState("DefaultCategory");
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
   const [createProduct, { isLoading: loadingCreate }] =
-  useCreateProductMutation();
+    useCreateProductMutation();
 
   const handleClosePopup = () => {
     props.handleDialog(false);
@@ -33,35 +36,36 @@ const AddProducts = (props: any) => {
       countInStock > 0 &&
       description !== "" &&
       category !== "" &&
-      image !== ""
+      image !== "" && 
+      address !== "" && 
+      phoneNumber !== undefined
     ) {
       setShowButtonDisabled(false);
     } else {
       setShowButtonDisabled(true);
     }
-  }, [name, price, brand, countInStock, description, category, image]);
+  }, [name, price, brand, countInStock, description, category, image,address,phoneNumber]);
 
   const uploadFileHandler = async (e: any) => {
-      try {
-        setLoader(true);
-        const storageRef = ref(storage, `images/${e.target.files[0].name}`);
-        await uploadBytes(storageRef, e.target.files[0]);
-        const downloadURL = await getDownloadURL(storageRef);
-        // setImageURL(downloadURL);
-        setImage(downloadURL)
-        if (downloadURL) {
-          toast.success("Image uploaded successfully!");
-        }
-        setLoader(false);
-      } catch (error) {
-        setLoader(false);
-        toast.error("Something went wrong");
+    try {
+      setLoader(true);
+      const storageRef = ref(storage, `images/${e.target.files[0].name}`);
+      await uploadBytes(storageRef, e.target.files[0]);
+      const downloadURL = await getDownloadURL(storageRef);
+      // setImageURL(downloadURL);
+      setImage(downloadURL);
+      if (downloadURL) {
+        toast.success("Image uploaded successfully!");
       }
+      setLoader(false);
+    } catch (error) {
+      setLoader(false);
+      toast.error("Something went wrong");
+    }
   };
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
-    console.log(category);
     const updatedProduct = {
       name,
       price,
@@ -70,16 +74,22 @@ const AddProducts = (props: any) => {
       category,
       countInStock,
       description,
+      address,
+      phoneNumber
     };
+    localStorage.setItem("product_added_location",address);
 
-    const result = await createProduct(updatedProduct);
-    if(result) {
+    if(phoneNumber.length === 13) {
+      const result = await createProduct(updatedProduct);
+      if (result) {
         // navigate('/productlist')
         props.handleDialog(false);
-        toast.success("Book added Successfully")
-        
+        toast.success("Book added Successfully");
+      } else {
+        toast.error("Something went wrong");
+      }
     }else {
-        toast.error("Something went wrong")
+      toast.error("Please Enter valid Phone Number")
     }
   };
 
@@ -179,9 +189,31 @@ const AddProducts = (props: any) => {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
+
+            <Form.Group controlId="phonenumber" className="my-2">
+              <Form.Label>Phone Number</Form.Label>
+              <PhoneInput
+                defaultCountry="IN"
+                placeholder="Enter phone number"
+                value={phoneNumber}
+                onChange={(e:any)=>{setPhoneNumber(e)}}
+              />
+            </Form.Group>
+
+            <Form.Group controlId="address" className="my-3">
+              <Form.Label>Pickup Address</Form.Label>
+              <Form.Control
+                as="textarea" // Set "as" prop to "textarea"
+                rows={3} // Specify the number of visible rows (adjust as needed)
+                placeholder="Enter Pickup Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
             <Button
               className="mt-2"
-              style={{marginRight:'10px'}}
+              style={{ marginRight: "10px" }}
               disabled={showButtonDisable}
               type="submit"
               variant="primary"
@@ -192,7 +224,7 @@ const AddProducts = (props: any) => {
               className="mt-2"
               type="button"
               variant="outline-primary"
-              onClick={(e)=> props.handleDialog(false)}
+              onClick={(e) => props.handleDialog(false)}
             >
               Cancel
             </Button>
