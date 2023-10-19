@@ -13,18 +13,25 @@ const AboutUs = () => {
     },
     {
       _id: 2,
+      name: "Sanket Ainchwar",
+      position: "Backend Engineer",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2Fsa.jpeg?alt=media&token=9c96fbec-4e4c-4600-a3ed-cfac3c15a39b&_gl=1*9x0z7k*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzczODM5Mi4yNy4xLjE2OTc3Mzg3NzkuNDguMC4w",
+    },
+    {
+      _id: 3,
       name: "Dikshant Tirpude",
       position: "Product Manager",
       image:
         "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2FWhatsApp%20Image%202023-10-18%20at%2012.08.29%20AM.jpeg?alt=media&token=a1d11060-2611-42a0-a30b-1f37f010ae6a&_gl=1*21t2mg*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzU2Nzk1Ni4yMy4xLjE2OTc1Njc5ODkuMjcuMC4w",
     },
-    // {
-    //   _id: 3,
-    //   name: "Jayesh Sevatkar",
-    //   position: "Founder, MERN Stack developer",
-    //   image:
-    //     "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2Fimage.jpeg?alt=media&token=68e004c3-4070-449c-b4a6-1ed50a707f5c&_gl=1*279wwo*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzE5MDE5NC4xOC4xLjE2OTcxOTA0MTYuMjAuMC4w",
-    // },
+    {
+      _id: 4,
+      name: "Shivam Kinkar",
+      position: "Account Manager",
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/bookbucket-5253e.appspot.com/o/images%2Fsk.jpeg?alt=media&token=fa812607-2e82-475c-a11a-a98224419a2e&_gl=1*et15m0*_ga*MzcyMzM2MzI5LjE2OTI0NTY4ODU.*_ga_CW55HF8NVT*MTY5NzczODM5Mi4yNy4xLjE2OTc3Mzg1MzIuMzkuMC4w",
+    },
   ];
   return (
     <section id="about-us">
@@ -53,6 +60,7 @@ const AboutUs = () => {
               /> */}
 
               <Carousel
+              interval={1500}
                 pause="hover"
               
                 className="bg-error mb-4 user-carousel-background"
@@ -71,7 +79,7 @@ const AboutUs = () => {
                       className="custom-image"
                     />
                     <Carousel.Caption className="carousel-caption">
-                      <h2>{developer.name} <br/><span style={{color: '#baf2ba', fontSize:'26px'}}>{developer.position}</span></h2>
+                      <h2>{developer.name} <br/><span style={{color: '#baf2ba', fontSize:'22px'}}>{developer.position}</span></h2>
                     </Carousel.Caption>
                   </Carousel.Item>
                 ))}
