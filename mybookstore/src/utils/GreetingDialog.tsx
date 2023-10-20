@@ -12,7 +12,6 @@ const GreetingDialog = ({message, handleDialog}:GreetingDialogProps) => {
         handleDialog(false)
     }
 
-    const userInfo = localStorage.getItem('userInfo');
   return (
     <Modal
         show={true}
