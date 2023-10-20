@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import Loader from "../components/Loader";
-import categories from "./objects";
+import categories, { bookConditions } from "./objects";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import storage from "./firebase";
 import { toast } from "react-toastify";
@@ -10,7 +10,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 
 const AddProducts = (props: any) => {
-  const prevProductLocation = localStorage.getItem('product_added_location')
+  const prevProductLocation = localStorage.getItem("product_added_location");
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
@@ -18,9 +18,12 @@ const AddProducts = (props: any) => {
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<any>();
-  const [address, setAddress] = useState(prevProductLocation? prevProductLocation :"");
+  const [address, setAddress] = useState(
+    prevProductLocation ? prevProductLocation : ""
+  );
+  const [bookType,setBookType] = useState("New Book");
   const [loader, setLoader] = useState(false);
-  const [category, setCategory] = useState("DefaultCategory");
+  const [category, setCategory] = useState("Adventure stories");
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
@@ -36,15 +39,27 @@ const AddProducts = (props: any) => {
       countInStock > 0 &&
       description !== "" &&
       category !== "" &&
-      image !== "" && 
-      address !== "" && 
+      image !== "" &&
+      address !== "" &&
+      bookType !== "" &&
       phoneNumber !== undefined
     ) {
       setShowButtonDisabled(false);
     } else {
       setShowButtonDisabled(true);
     }
-  }, [name, price, brand, countInStock, description, category, image,address,phoneNumber]);
+  }, [
+    name,
+    price,
+    brand,
+    countInStock,
+    description,
+    category,
+    image,
+    address,
+    phoneNumber,
+    bookType
+  ]);
 
   const uploadFileHandler = async (e: any) => {
     try {
@@ -68,18 +83,19 @@ const AddProducts = (props: any) => {
     e.preventDefault();
     const updatedProduct = {
       name,
-      price,
+      price: price + 50,
       image: image,
       brand,
       category,
       countInStock,
       description,
       address,
-      phoneNumber
+      phoneNumber,
+      bookType
     };
-    localStorage.setItem("product_added_location",address);
+    localStorage.setItem("product_added_location", address);
 
-    if(phoneNumber.length === 13) {
+    if (phoneNumber.length === 13) {
       const result = await createProduct(updatedProduct);
       if (result) {
         // navigate('/productlist')
@@ -88,8 +104,8 @@ const AddProducts = (props: any) => {
       } else {
         toast.error("Something went wrong");
       }
-    }else {
-      toast.error("Please Enter valid Phone Number")
+    } else {
+      toast.error("Please Enter valid Phone Number");
     }
   };
 
@@ -125,6 +141,18 @@ const AddProducts = (props: any) => {
                 onChange={(e) => setPrice(Number(e.target.value))}
               ></Form.Control>
             </Form.Group>
+            <span style={{ color: "red" }}>
+              <strong>Please Note:</strong>{" "}
+              <span>
+                We are adding Rs.50 to your original price for packing and
+                shipping
+              </span>
+            </span>
+            <div>
+              <strong style={{ color: "green" }}>
+                Total book price: {price} + {50} = {price + 50}
+              </strong>
+            </div>
             {/* {Image input } */}
 
             <Form.Group controlId="image" className="my-2">
@@ -145,7 +173,7 @@ const AddProducts = (props: any) => {
             {loader && <Loader />}
 
             <Form.Group controlId="brand" className="my-2">
-              <Form.Label>Brand</Form.Label>
+              <Form.Label>Author's Names</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter brand"
@@ -179,6 +207,21 @@ const AddProducts = (props: any) => {
               </Form.Control>
             </Form.Group>
 
+            <Form.Group controlId="booktype" className="my-2">
+              <Form.Label>Book Type</Form.Label>
+              <Form.Control
+                as="select"
+                value={bookType}
+                onChange={(e) => setBookType(e.target.value)}
+              >
+                {bookConditions.map((x) => (
+                  <option key={x.name} value={x.name}>
+                    {x.name}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
             <Form.Group controlId="description" className="my-2">
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -196,7 +239,9 @@ const AddProducts = (props: any) => {
                 defaultCountry="IN"
                 placeholder="Enter phone number"
                 value={phoneNumber}
-                onChange={(e:any)=>{setPhoneNumber(e)}}
+                onChange={(e: any) => {
+                  setPhoneNumber(e);
+                }}
               />
             </Form.Group>
 

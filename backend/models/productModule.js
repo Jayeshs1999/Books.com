@@ -79,6 +79,10 @@ const productSchema =new mongoose.Schema({
     phoneNumber: {
         type:String,
         required: true,
+    },
+    bookType: {
+        type:String,
+        required: true,
     }
 
 }, {

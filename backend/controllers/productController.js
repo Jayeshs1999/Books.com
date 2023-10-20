@@ -68,7 +68,8 @@ const createProduct =asyncHandler( async (req,res)=>{
         category,
         countInStock,
         address,
-        phoneNumber
+        phoneNumber,
+        bookType
     } = req.body;
     
     const product = new Product({
@@ -82,7 +83,8 @@ const createProduct =asyncHandler( async (req,res)=>{
         numReviews: 0,
         description: description,
         address: address,
-        phoneNumber: phoneNumber
+        phoneNumber: phoneNumber,
+        bookType: bookType
     })
 
     const createProduct = await product.save();
@@ -102,7 +104,8 @@ const updateProduct =asyncHandler( async (req,res)=>{
         category,
         countInStock,
         address,
-        phoneNumber
+        phoneNumber,
+        bookType
     } = req.body;
 
     const product = await Product.findById(req.params.id);
@@ -116,6 +119,7 @@ const updateProduct =asyncHandler( async (req,res)=>{
         product.countInStock = countInStock;
         product.address = address,
         product.phoneNumber = phoneNumber
+        product.bookType = bookType
 
         const updateProduct =await product.save();
         res.json(updateProduct);
