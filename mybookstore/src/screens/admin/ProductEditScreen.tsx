@@ -46,7 +46,7 @@ const ProductEditScreen = () => {
   useEffect(() => {
     if (product) {
       setName(product.name);
-      setPrice(product.price);
+      setPrice(product.price - 50);
       setImage(product.image);
       setBrand(product.brand);
       setCategory(product.category);
@@ -92,11 +92,10 @@ const ProductEditScreen = () => {
 
   const submitHandler = async (e: any) => {
     e.preventDefault();
-    console.log(category);
     const updatedProduct = {
       _id: productId,
       name,
-      price,
+      price: price + 50,
       image: imageURL || image,
       brand,
       category,
@@ -114,8 +113,8 @@ const ProductEditScreen = () => {
         toast.success("Product updated");
         navigate("/productlist");
       }
-    }else {
-      toast.error("Please Enter Valid Phone Number")
+    } else {
+      toast.error("Please Enter Valid Phone Number");
     }
   };
 
@@ -172,6 +171,20 @@ const ProductEditScreen = () => {
                 onChange={(e) => setPrice(Number(e.target.value))}
               ></Form.Control>
             </Form.Group>
+            <span style={{ color: "red" }}>
+              <strong>Please Note:</strong>{" "}
+              <span>
+                We are adding Rs.50 to your original price for packing and
+                shipping
+              </span>
+            </span>
+            <div style={{ color: "green" }}>
+              <strong>Total book price:</strong>
+              <span>
+                {" "}
+                {price} + {50} = <strong>{price + 50}</strong>
+              </span>
+            </div>
             {/* {Image input } */}
 
             <Form.Group controlId="image" className="my-2">
@@ -192,7 +205,7 @@ const ProductEditScreen = () => {
             {loader && <Loader />}
 
             <Form.Group controlId="brand" className="my-2">
-              <Form.Label>Brand</Form.Label>
+              <Form.Label>Author's Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter brand"
@@ -248,7 +261,7 @@ const ProductEditScreen = () => {
             </Form.Group>
             <Form.Group controlId="phonenumber" className="my-2">
               <Form.Label style={{ color: "red" }}>
-                If You Want To Change Phone Number
+                Please Add your phone number again &#128528;
               </Form.Label>
               <PhoneInput
                 defaultCountry="IN"

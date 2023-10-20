@@ -10,7 +10,7 @@ import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
 
 const AddProducts = (props: any) => {
-  const prevProductLocation = localStorage.getItem('product_added_location')
+  const prevProductLocation = localStorage.getItem("product_added_location");
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
@@ -18,7 +18,9 @@ const AddProducts = (props: any) => {
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<any>();
-  const [address, setAddress] = useState(prevProductLocation? prevProductLocation :"");
+  const [address, setAddress] = useState(
+    prevProductLocation ? prevProductLocation : ""
+  );
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState("DefaultCategory");
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
@@ -36,15 +38,25 @@ const AddProducts = (props: any) => {
       countInStock > 0 &&
       description !== "" &&
       category !== "" &&
-      image !== "" && 
-      address !== "" && 
+      image !== "" &&
+      address !== "" &&
       phoneNumber !== undefined
     ) {
       setShowButtonDisabled(false);
     } else {
       setShowButtonDisabled(true);
     }
-  }, [name, price, brand, countInStock, description, category, image,address,phoneNumber]);
+  }, [
+    name,
+    price,
+    brand,
+    countInStock,
+    description,
+    category,
+    image,
+    address,
+    phoneNumber,
+  ]);
 
   const uploadFileHandler = async (e: any) => {
     try {
@@ -68,18 +80,18 @@ const AddProducts = (props: any) => {
     e.preventDefault();
     const updatedProduct = {
       name,
-      price,
+      price: price + 50,
       image: image,
       brand,
       category,
       countInStock,
       description,
       address,
-      phoneNumber
+      phoneNumber,
     };
-    localStorage.setItem("product_added_location",address);
+    localStorage.setItem("product_added_location", address);
 
-    if(phoneNumber.length === 13) {
+    if (phoneNumber.length === 13) {
       const result = await createProduct(updatedProduct);
       if (result) {
         // navigate('/productlist')
@@ -88,8 +100,8 @@ const AddProducts = (props: any) => {
       } else {
         toast.error("Something went wrong");
       }
-    }else {
-      toast.error("Please Enter valid Phone Number")
+    } else {
+      toast.error("Please Enter valid Phone Number");
     }
   };
 
@@ -125,6 +137,18 @@ const AddProducts = (props: any) => {
                 onChange={(e) => setPrice(Number(e.target.value))}
               ></Form.Control>
             </Form.Group>
+            <span>
+              <strong style={{ color: "red" }}>Please Note:</strong>{" "}
+              <span>
+                We are adding Rs.50 to your original price for packing and
+                shipping
+              </span>
+            </span>
+            <div>
+              <strong style={{ color: "green" }}>
+                Total book price: {price} + {50} = {price + 50}
+              </strong>
+            </div>
             {/* {Image input } */}
 
             <Form.Group controlId="image" className="my-2">
@@ -145,7 +169,7 @@ const AddProducts = (props: any) => {
             {loader && <Loader />}
 
             <Form.Group controlId="brand" className="my-2">
-              <Form.Label>Brand</Form.Label>
+              <Form.Label>Author's Names</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter brand"
@@ -196,7 +220,9 @@ const AddProducts = (props: any) => {
                 defaultCountry="IN"
                 placeholder="Enter phone number"
                 value={phoneNumber}
-                onChange={(e:any)=>{setPhoneNumber(e)}}
+                onChange={(e: any) => {
+                  setPhoneNumber(e);
+                }}
               />
             </Form.Group>
 
