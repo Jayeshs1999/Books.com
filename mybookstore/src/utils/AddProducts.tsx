@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import Loader from "../components/Loader";
-import categories from "./objects";
+import categories, { bookConditions } from "./objects";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import storage from "./firebase";
 import { toast } from "react-toastify";
@@ -21,8 +21,9 @@ const AddProducts = (props: any) => {
   const [address, setAddress] = useState(
     prevProductLocation ? prevProductLocation : ""
   );
+  const [bookType,setBookType] = useState("New Book");
   const [loader, setLoader] = useState(false);
-  const [category, setCategory] = useState("DefaultCategory");
+  const [category, setCategory] = useState("Adventure stories");
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
@@ -40,6 +41,7 @@ const AddProducts = (props: any) => {
       category !== "" &&
       image !== "" &&
       address !== "" &&
+      bookType !== "" &&
       phoneNumber !== undefined
     ) {
       setShowButtonDisabled(false);
@@ -56,6 +58,7 @@ const AddProducts = (props: any) => {
     image,
     address,
     phoneNumber,
+    bookType
   ]);
 
   const uploadFileHandler = async (e: any) => {
@@ -88,6 +91,7 @@ const AddProducts = (props: any) => {
       description,
       address,
       phoneNumber,
+      bookType
     };
     localStorage.setItem("product_added_location", address);
 
@@ -137,8 +141,8 @@ const AddProducts = (props: any) => {
                 onChange={(e) => setPrice(Number(e.target.value))}
               ></Form.Control>
             </Form.Group>
-            <span>
-              <strong style={{ color: "red" }}>Please Note:</strong>{" "}
+            <span style={{ color: "red" }}>
+              <strong>Please Note:</strong>{" "}
               <span>
                 We are adding Rs.50 to your original price for packing and
                 shipping
@@ -196,6 +200,21 @@ const AddProducts = (props: any) => {
                 onChange={(e) => setCategory(e.target.value)}
               >
                 {categories.map((x) => (
+                  <option key={x.name} value={x.name}>
+                    {x.name}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="booktype" className="my-2">
+              <Form.Label>Book Type</Form.Label>
+              <Form.Control
+                as="select"
+                value={bookType}
+                onChange={(e) => setBookType(e.target.value)}
+              >
+                {bookConditions.map((x) => (
                   <option key={x.name} value={x.name}>
                     {x.name}
                   </option>

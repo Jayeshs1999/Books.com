@@ -65,4 +65,9 @@ const categories = [
     { name: "Zoology", value: "zoology" },
   ];
 
+  export const bookConditions = [
+    {name: 'New Book', value: "new_book"},
+    {name: 'Used Book', value: "used_book"},
+  ]
+
   export default categories;

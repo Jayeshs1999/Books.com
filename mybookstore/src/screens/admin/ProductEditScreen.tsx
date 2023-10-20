@@ -14,7 +14,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { SerializedError } from "@reduxjs/toolkit";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import storage from "../../utils/firebase";
-import categories from "../../utils/objects";
+import categories, { bookConditions } from "../../utils/objects";
 import PhoneInput from "react-phone-number-input";
 
 const ProductEditScreen = () => {
@@ -32,6 +32,7 @@ const ProductEditScreen = () => {
   const [phoneNumber, setPhoneNumber] = useState<any>();
   const [address, setAddress] = useState("");
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
+  const [bookType,setBookType] = useState("New Book");
 
   const {
     data: product,
@@ -53,6 +54,7 @@ const ProductEditScreen = () => {
       setCountInStock(product.countInStock);
       setDescription(product.description);
       setAddress(product.address);
+      setBookType(product.bookType);
     }
   }, [product]);
 
@@ -66,6 +68,7 @@ const ProductEditScreen = () => {
       category !== "" &&
       image !== "" &&
       address !== "" &&
+      bookType !== "" &&
       phoneNumber !== undefined
     ) {
       setShowButtonDisabled(false);
@@ -82,6 +85,7 @@ const ProductEditScreen = () => {
     image,
     address,
     phoneNumber,
+    bookType
   ]);
 
   function hasError(
@@ -103,6 +107,7 @@ const ProductEditScreen = () => {
       description,
       phoneNumber,
       address,
+      bookType
     };
 
     if (phoneNumber.length === 13) {
@@ -224,16 +229,6 @@ const ProductEditScreen = () => {
               ></Form.Control>
             </Form.Group>
 
-            {/* <Form.Group controlId="category" className="my-2">
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
-            </Form.Group> */}
-
             <Form.Group controlId="category" className="my-2">
               <Form.Label>Select Category</Form.Label>
               <Form.Control
@@ -248,6 +243,22 @@ const ProductEditScreen = () => {
                 ))}
               </Form.Control>
             </Form.Group>
+
+            <Form.Group controlId="booktype" className="my-2">
+              <Form.Label>Book Type</Form.Label>
+              <Form.Control
+                as="select"
+                value={bookType}
+                onChange={(e) => setBookType(e.target.value)}
+              >
+                {bookConditions.map((x) => (
+                  <option key={x.name} value={x.name}>
+                    {x.name}
+                  </option>
+                ))}
+              </Form.Control>
+            </Form.Group>
+
 
             <Form.Group controlId="description" className="my-2">
               <Form.Label>Description</Form.Label>
