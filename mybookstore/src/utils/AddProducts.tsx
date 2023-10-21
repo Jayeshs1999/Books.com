@@ -112,6 +112,7 @@ const AddProducts = (props: any) => {
   return (
     <Modal
       show={true}
+      size="lg"
       onHide={handleClosePopup}
       backdrop="static" // This prevents closing when clicking outside the modal
       keyboard={false} // This prevents closing when pressing the Esc key
