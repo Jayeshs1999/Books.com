@@ -10,8 +10,10 @@ import ProductCorousel from "../components/ProductCorousel";
 import { useSelector } from "react-redux";
 import OnlineStatusChecker from "../utils/OnlineStatusChecker";
 import Meta from "../components/Meta";
+import { useTranslation } from "react-i18next";
 
 const HomeScreen = () => {
+  const { t } = useTranslation();
   const { pageNumber, keyword, categoryName } = useParams();
 
   const { data, isLoading, error, isFetching } = useGetProductsQuery({
@@ -31,19 +33,19 @@ const HomeScreen = () => {
             <ProductCorousel />
           ) : (
             <Link to={"/"} className="btn btn-light mb-4">
-              Go Back
+              {t('go_back')}
             </Link>
           )}
           {isLoading || isFetching ? (
             <Loader />
           ) : error ? (
             <Message variant="danger">
-              Something went wrong, Please refresh the page
+              {t('something_went_wrong_please_refresh_the_page')}
             </Message>
           ) : (
             <>
               <Meta/>
-              <h1>Latest Products</h1>
+              <h1>{t('latest_products')}</h1>
               <Row>
                 {data.products &&
                   data.products.map((product: any) => (

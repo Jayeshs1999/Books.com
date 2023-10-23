@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap';
-import { useNavigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
 const SearchBox = () => {
 
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const {keyword: urlKeyword} = useParams();
     const [keyword, setKeyword] = useState(urlKeyword || '');
 
@@ -25,7 +27,7 @@ const SearchBox = () => {
         name='q'
         onChange={(e)=>setKeyword(e.target.value)}
         value={keyword}
-        placeholder='Search Products...'
+        placeholder={t('searchBooks')}
         className='mr-sm-2 ml-sm-5'
         >
         </Form.Control>
@@ -34,7 +36,7 @@ const SearchBox = () => {
         variant='outline-light'
         className='p-2 mx-2'
         >
-            Search
+            {t('search')}
         </Button>
    </Form>
   )
