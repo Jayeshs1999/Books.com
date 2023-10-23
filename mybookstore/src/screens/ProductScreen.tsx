@@ -24,8 +24,10 @@ import { addToCart } from "../slices/cartSlice";
 import { toast } from "react-toastify";
 import Meta from "../components/Meta";
 import OnlineStatusChecker from "../utils/OnlineStatusChecker";
+import { useTranslation } from "react-i18next";
 
 const ProductScreen = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [qty, setQty] = useState(1);
@@ -81,12 +83,12 @@ const ProductScreen = () => {
         <>
           <OnlineStatusChecker />
           <Link to="/" className="btn btn-light my-3">
-            Go Back
+            {t('go_back')}
           </Link>
           {isLoading ? (
             <Loader />
           ) : error ? (
-            <Message variant="danger">Something Went Wrong</Message>
+            <Message variant="danger">{t('something_went_wrong_please_refresh_the_page')}</Message>
           ) : (
             <>
               <Meta title={product.name} />
@@ -110,10 +112,10 @@ const ProductScreen = () => {
                       />
                     </ListGroup.Item>
                     <ListGroup.Item>
-                      Price: Rs.{product && product["price"]}
+                      {t('price')}: {t('rupees')} {product && product["price"]}
                     </ListGroup.Item>
                     <ListGroup.Item>
-                      Description: {product && product["description"]}
+                      {t('description')}: {product && product["description"]}
                     </ListGroup.Item>
                   </ListGroup>
                 </Col>
@@ -122,21 +124,21 @@ const ProductScreen = () => {
                     <ListGroup variant="flush">
                       <ListGroup.Item>
                         <Row>
-                          <Col>Price:</Col>
+                          <Col>{t('price')}:</Col>
                           <Col>
-                            <strong>Rs.{product && product["price"]}</strong>
+                            <strong>{t('rupees')} {product && product["price"]}</strong>
                           </Col>
                         </Row>
                       </ListGroup.Item>
 
                       <ListGroup.Item>
                         <Row>
-                          <Col>Status:</Col>
+                          <Col>{t('status')}:</Col>
                           <Col>
                             <strong>
                               {product && product["countInStock"] > 0
-                                ? "In Stock"
-                                : "Out of Stock"}
+                                ? t('in_stock')
+                                : t('out_of_stock')}
                             </strong>
                           </Col>
                         </Row>
@@ -145,7 +147,7 @@ const ProductScreen = () => {
                       {product.countInStock > 0 && (
                         <ListGroup.Item>
                           <Row>
-                            <Col>Qty</Col>
+                            <Col>{t('qty')}</Col>
                             <Col>
                               <Form.Control
                                 as="select"
@@ -172,7 +174,7 @@ const ProductScreen = () => {
                           disabled={product && product["countInStock"] === 0}
                           onClick={addToCartHandler}
                         >
-                          Add To Cart
+                          {t('add_to_cart')}
                         </Button>
                       </ListGroup.Item>
                     </ListGroup>
@@ -203,12 +205,12 @@ const ProductScreen = () => {
                     </Button>}
 
                     <ListGroup.Item>
-                      <h2>Write a Customer Review</h2>
+                      <h2>{t('write_a_customer_review')}</h2>
                       {LoadingProductReview && <Loader />}
                       {userInfo ? (
                         <Form onSubmit={submitHandler}>
                           <Form.Group controlId="rating" className="my-2">
-                            <FormLabel>Rating</FormLabel>
+                            <FormLabel>{t('rating')}</FormLabel>
                             <Form.Control
                               as="select"
                               value={rating}
@@ -216,16 +218,16 @@ const ProductScreen = () => {
                                 setRating(Number(e.target.value))
                               }
                             >
-                              <option value="">Select...</option>
-                              <option value="1">1 - Poor</option>
-                              <option value="2">2 - Fair</option>
-                              <option value="3">3 - Good</option>
-                              <option value="4">4 - Very Good</option>
-                              <option value="5">5 - Excellent</option>
+                              <option value="">{t('select')}...</option>
+                              <option value="1">1 - {t('poor')}</option>
+                              <option value="2">2 - {t('fair')}</option>
+                              <option value="3">3 - {t('good')}</option>
+                              <option value="4">4 - {t('very_good')}</option>
+                              <option value="5">5 - {t('excellent')}</option>
                             </Form.Control>
                           </Form.Group>
                           <Form.Group controlId="comment" className="my-2">
-                            <Form.Label>Comment</Form.Label>
+                            <Form.Label>{t('comment')}</Form.Label>
                             <Form.Control
                               as="textarea"
                               rows={3}
@@ -238,7 +240,7 @@ const ProductScreen = () => {
                             type="submit"
                             variant="primary"
                           >
-                            Submit
+                            {t('submit')}
                           </Button>
                         </Form>
                       ) : (

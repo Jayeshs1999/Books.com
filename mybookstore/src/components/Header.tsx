@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useTransition } from "react";
 import { Navbar, Nav, Container, Badge, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import logo from "../assets/logo.png";
@@ -11,13 +11,17 @@ import SearchBox from "./SearchBox";
 import { resetCart } from "../slices/cartSlice";
 import scrollToTop from "../utils/moveToTop";
 import categories from "../utils/objects";
-
+import { useTranslation } from "react-i18next";
 const Header = () => {
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    localStorage.getItem("language") ? localStorage.getItem("language") : "en"
+  );
   const { cartItems } = useSelector((state: any) => state.cart);
   const { userInfo } = useSelector((state: any) => state.auth);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [logoutApiCall] = useLogoutMutation();
 
@@ -31,6 +35,15 @@ const Header = () => {
       console.log(error);
     }
   };
+
+  const { i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    localStorage.setItem("language", lng);
+    setSelectedLanguage(lng);
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <header className="sticky-header">
       <Navbar
@@ -44,7 +57,7 @@ const Header = () => {
           <LinkContainer to="/">
             <Navbar.Brand className="domain-font">
               <img width={"50px"} src={logo} alt="abs" />
-              &nbsp; BookBucket
+              &nbsp; <strong>BookBucket.In</strong>
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle area-aria-controls="basic-navbar-nav" />
@@ -52,10 +65,10 @@ const Header = () => {
             <Nav className="ms-auto">
               <SearchBox />
               <LinkContainer to="/">
-                <Nav.Link>Home</Nav.Link>
+                <Nav.Link>{t("home")}</Nav.Link>
               </LinkContainer>
               <NavDropdown
-                title="Categories"
+                title={t("categories")}
                 id="adminmenu"
                 style={{ zIndex: "999" }}
               >
@@ -72,7 +85,7 @@ const Header = () => {
                 </div>
               </NavDropdown>
               <LinkContainer to="/aboutus" onClick={scrollToTop}>
-                <Nav.Link>About Us</Nav.Link>
+                <Nav.Link>{t("aboutUs")}</Nav.Link>
               </LinkContainer>
               <LinkContainer to="/cart">
                 <Nav.Link>
@@ -86,39 +99,55 @@ const Header = () => {
                 </Nav.Link>
               </LinkContainer>
               <NavDropdown
-                title={userInfo?.isAdmin ? "Admin" : "Sell My Books"}
+                title={
+                  userInfo?.isAdmin
+                    ? `${t("admin")}`
+                    : `${t("userProductAdmin")}`
+                }
                 id="adminmenu"
               >
                 <LinkContainer to="/productlist">
-                  <NavDropdown.Item>Products</NavDropdown.Item>
+                  <NavDropdown.Item>{t("products")}</NavDropdown.Item>
                 </LinkContainer>
                 {userInfo && userInfo.isAdmin && (
                   <>
                     <LinkContainer to="/admin/userlist">
-                      <NavDropdown.Item>Users</NavDropdown.Item>
+                      <NavDropdown.Item>{t("users")}</NavDropdown.Item>
                     </LinkContainer>
                     <LinkContainer to="/admin/orderlist">
-                      <NavDropdown.Item>Orders</NavDropdown.Item>
+                      <NavDropdown.Item>{t("orders")}</NavDropdown.Item>
                     </LinkContainer>
                   </>
                 )}
               </NavDropdown>
+
+              <NavDropdown title={t("language")} id="language">
+                  <div onClick={() => changeLanguage("en")}>
+                    <NavDropdown.Item active={selectedLanguage === "en"}>
+                      English
+                    </NavDropdown.Item>
+                  </div>
+                  <div onClick={() => changeLanguage("es")}>
+                    <NavDropdown.Item active={selectedLanguage === "es"}>
+                      मराठी
+                    </NavDropdown.Item>
+                  </div>
+              </NavDropdown>
+
               {userInfo ? (
-                <NavDropdown title={                
-                      <span>{userInfo.name}</span>
-                } id="username">
+                <NavDropdown title={<span>{userInfo.name}</span>} id="username">
                   <LinkContainer to="/profile">
-                    <NavDropdown.Item>Profile & Orders</NavDropdown.Item>
+                    <NavDropdown.Item>{t("profileAndOrders")}</NavDropdown.Item>
                   </LinkContainer>
                   <NavDropdown.Item onClick={logoutHandler}>
-                    Logout
+                    {t("logout")}
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
                 <LinkContainer to="/login">
                   <Nav.Link>
                     <FaUser />
-                    Sign In
+                    {t("signIn")}
                   </Nav.Link>
                 </LinkContainer>
               )}

@@ -33,6 +33,8 @@ import UserEditScreen from "./screens/admin/UserEditScreen";
 import { HelmetProvider } from "react-helmet-async";
 import ForgetPasswordScreen from "./screens/ForgetPasswordScreen";
 import AboutUs from "./screens/AboutUs";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,15 +81,19 @@ const root = ReactDOM.createRoot(
 );
 
 root.render(
+  <I18nextProvider i18n={i18n}>
   <React.StrictMode>
     <HelmetProvider>
+    <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <PayPalScriptProvider  deferLoading={true} options={{clientId:''}}>
         <RouterProvider router={router} />
       </PayPalScriptProvider>
     </Provider>
+    </I18nextProvider>
     </HelmetProvider>
   </React.StrictMode>
+  </I18nextProvider>
 );
 
 reportWebVitals();

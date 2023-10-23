@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Rating from "./Rating";
+import { t } from "i18next";
 
 const Product = ({ product }: any) => {
   return (
@@ -25,7 +26,7 @@ const Product = ({ product }: any) => {
               reviews
             ></Rating>
           </Card.Text>
-          <Card.Text as="h3">Rs.{product.price}</Card.Text>
+          <Card.Text as="h3">{t('rupees')} {product.price}</Card.Text>
         </Card.Body>
       </Card>
     </div>
