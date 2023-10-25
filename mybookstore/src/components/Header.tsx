@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from "react";
+import React, { useState } from "react";
 import { Navbar, Nav, Container, Badge, NavDropdown } from "react-bootstrap";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
 import logo from "../assets/logo.png";
@@ -10,7 +10,7 @@ import { logout } from "../slices/authSlice";
 import SearchBox from "./SearchBox";
 import { resetCart } from "../slices/cartSlice";
 import scrollToTop from "../utils/moveToTop";
-import categories from "../utils/objects";
+import categories, { userProfileVisibleLogic } from "../utils/objects";
 import { useTranslation } from "react-i18next";
 const Header = () => {
   const [selectedLanguage, setSelectedLanguage] = useState(
@@ -89,8 +89,11 @@ const Header = () => {
               </LinkContainer>
               <LinkContainer to="/cart">
                 <Nav.Link>
-                  <FaShoppingCart />
-                  Cart
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <FaShoppingCart />
+                    <div style={{ marginLeft: "5px" }}>{t("cart")}</div>
+                  </div>
+
                   {cartItems.length > 0 && (
                     <Badge pill bg="success" style={{ marginLeft: "5px" }}>
                       {cartItems.reduce((a: any, c: any) => a + c.qty, 0)}
@@ -122,20 +125,23 @@ const Header = () => {
               </NavDropdown>
 
               <NavDropdown title={t("language")} id="language">
-                  <div onClick={() => changeLanguage("en")}>
-                    <NavDropdown.Item active={selectedLanguage === "en"}>
-                      English
-                    </NavDropdown.Item>
-                  </div>
-                  <div onClick={() => changeLanguage("es")}>
-                    <NavDropdown.Item active={selectedLanguage === "es"}>
-                      मराठी
-                    </NavDropdown.Item>
-                  </div>
+                <div onClick={() => changeLanguage("en")}>
+                  <NavDropdown.Item active={selectedLanguage === "en"}>
+                    English
+                  </NavDropdown.Item>
+                </div>
+                <div onClick={() => changeLanguage("es")}>
+                  <NavDropdown.Item active={selectedLanguage === "es"}>
+                    मराठी
+                  </NavDropdown.Item>
+                </div>
               </NavDropdown>
 
               {userInfo ? (
-                <NavDropdown title={<span>{userInfo.name}</span>} id="username">
+                <NavDropdown
+                  title={<span>{userProfileVisibleLogic(userInfo.name)}</span>}
+                  id="username"
+                >
                   <LinkContainer to="/profile">
                     <NavDropdown.Item>{t("profileAndOrders")}</NavDropdown.Item>
                   </LinkContainer>

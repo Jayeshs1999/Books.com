@@ -21,6 +21,7 @@ import emailjs from "@emailjs/browser";
 import sendEmail from "../utils/sendEmail";
 import GreetingDialog from "../utils/GreetingDialog";
 import moveToTop from "../utils/moveToTop";
+import { t } from "i18next";
 
 const OrderScreen = () => {
   const apiKey = process.env.REACT_APP_PUBLIC_ID;
@@ -69,52 +70,60 @@ const OrderScreen = () => {
     }
   }, [order, paypal, paypalDispatch, loadingPaypal, errorPaypal]);
 
-  async function onApproveTest(e:any) {
+  async function onApproveTest(e: any) {
     e.preventDefault();
     try {
-      const isPaidSuccessfully = await payOrder({ orderId, details: { email_address: userInfo.email , payer: {} } });
-      localStorage.removeItem('cart')
+      const isPaidSuccessfully = await payOrder({
+        orderId,
+        details: { email_address: userInfo.email, payer: {} },
+      });
+      localStorage.removeItem("cart");
       refetch();
       toast.success("Order Confirmed !");
       moveToTop();
       setShowVerificationPopup(true);
-      if('data' in isPaidSuccessfully) {
-        const updatedData = isPaidSuccessfully && isPaidSuccessfully?.data?.updatedAt;
-        const paymentMethod =  'Cash On Delivery';
+      if ("data" in isPaidSuccessfully) {
+        const updatedData =
+          isPaidSuccessfully && isPaidSuccessfully?.data?.updatedAt;
+        const paymentMethod = "Cash On Delivery";
         const address = `${isPaidSuccessfully?.data.shippingAddress?.address} 
         ${isPaidSuccessfully?.data.shippingAddress?.postalCode} ${isPaidSuccessfully?.data.shippingAddress?.city} 
-        ${isPaidSuccessfully?.data.shippingAddress?.state} ${isPaidSuccessfully?.data.shippingAddress?.country} `
+        ${isPaidSuccessfully?.data.shippingAddress?.state} ${isPaidSuccessfully?.data.shippingAddress?.country} `;
 
         //Reciever email here
-
 
         sendEmail({
           name: userInfo.name,
           email: userInfo.email,
           senderName: "BookBucket",
           titleMessage: `Congratulations!, ${userInfo.name}`,
-          message: 'Congratulations! Your order has been confirmed successfully. we will deliver your order soon.',
-          subMessage: 'Order Summary',
-          otp:'',
+          message:
+            "Congratulations! Your order has been confirmed successfully. we will deliver your order soon.",
+          subMessage: "Order Summary",
+          otp: "",
           currentDate: `Current Date: ${updatedData}`,
           paymentMethod: `Payment method: ${paymentMethod}`,
           shippingAddress: `Shipping Address: ${address}`,
         });
 
         //Sender email here
-         await emailjs.send(`${process.env.REACT_APP_SERVICE_ID}`, `${process.env.REACT_APP_SENDER_TEMPLATE_ID}`, {
-          name:"Admin BookBucket",
-           recipient: 'jayesh.sevatkar10@gmail.com',
-           orderMadeBy: userInfo.name,
-           whoMakeOrder: userInfo.email,
-           currentDate: updatedData,
-           paymentMethod: paymentMethod,
-           shippingAddress : address
-
-         },`${process.env.REACT_APP_PUBLIC_ID}`);
+        await emailjs.send(
+          `${process.env.REACT_APP_SERVICE_ID}`,
+          `${process.env.REACT_APP_SENDER_TEMPLATE_ID}`,
+          {
+            name: "Admin BookBucket",
+            recipient: "jayesh.sevatkar10@gmail.com",
+            orderMadeBy: userInfo.name,
+            whoMakeOrder: userInfo.email,
+            currentDate: updatedData,
+            paymentMethod: paymentMethod,
+            shippingAddress: address,
+          },
+          `${process.env.REACT_APP_PUBLIC_ID}`
+        );
       }
     } catch (error) {
-      console.log("error",error);
+      console.log("error", error);
     }
   }
 
@@ -123,7 +132,7 @@ const OrderScreen = () => {
       try {
         await payOrder({ orderId, details }).unwrap();
         refetch();
-        if(order.paymentMethod==='CashOnDelivery'){
+        if (order.paymentMethod === "CashOnDelivery") {
           toast.success("Thank You! Your order confirm successfully ");
         }
         toast.success("Payment successful");
@@ -168,22 +177,24 @@ const OrderScreen = () => {
     <Message variant="danger">{error}</Message>
   ) : (
     <>
-      <h1>Order {order._id}</h1>
+      <h1>
+        {t("order_id")} {order._id}
+      </h1>
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h2>Shipping</h2>
+              <h2>{t("shipping")}</h2>
               <p>
-                <strong>Name: </strong>
+                <strong>{t("name")} : </strong>
                 {order.user.name}
               </p>
               <p>
-                <strong>Email: </strong>
+                <strong>{t("email")} : </strong>
                 {order.user.email}
               </p>
               <p>
-                <strong>Address: </strong>
+                <strong>{t("address")} : </strong>
                 {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
                 {order.shippingAddress.postalCode},{" "}
                 {order.shippingAddress.country}
@@ -191,30 +202,36 @@ const OrderScreen = () => {
 
               {order.isDelivered ? (
                 <Message variant="success">
-                  Delivered on {order.deliveredAt}
+                  {t("delivered_on")} {order.deliveredAt}
                 </Message>
               ) : (
-                <Message variant="danger">Not Delivered</Message>
+                <Message variant="danger">{t("not_delivered")}</Message>
               )}
             </ListGroup.Item>
             <ListGroup.Item>
-              <h2>Payment Method</h2>
+              <h2>{t("payment_method")}</h2>
               <p>
                 <strong>Method:&nbsp;&nbsp;</strong>
-                 {order.paymentMethod}
+                {order.paymentMethod}
               </p>
-              {order.paymentMethod==='CashOnDelivery' &&
-               order.isPaid ? <Message variant="success">Order Confirm! </Message>:
-               <Message variant="danger">Order Not Confirm (click on Place order button to confirm ) </Message>
-              }
-              { order.paymentMethod==='paypal' && ( order.isPaid ? (
-                <Message variant="success">Paid on {order.paidAt}</Message>
+              {order.paymentMethod === "CashOnDelivery" && order.isPaid ? (
+                <Message variant="success">{t("order_confirmed")} </Message>
               ) : (
-                <Message variant="danger">Not Paid</Message>)
+                <Message variant="danger">
+                  {t(
+                    "order_not_confirm_(click_on_place_order_button_to_confirm_)"
+                  )}{" "}
+                </Message>
               )}
+              {order.paymentMethod === "paypal" &&
+                (order.isPaid ? (
+                  <Message variant="success">Paid on {order.paidAt}</Message>
+                ) : (
+                  <Message variant="danger">Not Paid</Message>
+                ))}
             </ListGroup.Item>
             <ListGroup.Item>
-              <h2>Order Items</h2>
+              <h2>{t("order_items")}</h2>
               {order.orderItems.map((item: any, index: any) => (
                 <ListGroup.Item key={index}>
                   <Row>
@@ -225,7 +242,8 @@ const OrderScreen = () => {
                       <Link to={`/product/${item.product}`}>{item.name}</Link>
                     </Col>
                     <Col md={4}>
-                      {item.qty} * Rs.{item.price} = Rs.{item.qty * item.price}
+                      {item.qty} * {t("rupees")} {item.price} = {t("rupees")}{" "}
+                      {item.qty * item.price}
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -237,25 +255,33 @@ const OrderScreen = () => {
           <Card>
             <ListGroup>
               <ListGroup.Item>
-                <h2>Order Summary</h2>
+                <h2>{t("order_summary")}</h2>
               </ListGroup.Item>
 
               <ListGroup.Item>
                 <Row>
-                  <Col>Items</Col>
-                  <Col>Rs.{order.itemsPrice}</Col>
+                  <Col>{t("items")}</Col>
+                  <Col>
+                    {t("rupees")} {order.itemsPrice}
+                  </Col>
                 </Row>
                 <Row>
-                  <Col>Shipping</Col>
-                  <Col>Rs.{order.shippingPrice}</Col>
+                  <Col>{t("shipping_charges")}</Col>
+                  <Col>
+                    {t("rupees")} {order.shippingPrice}
+                  </Col>
                 </Row>
                 <Row>
-                  <Col>Tax</Col>
-                  <Col>Rs.{order.taxPrice}</Col>
+                  <Col>{t("tax")}</Col>
+                  <Col>
+                    {t("rupees")} {order.taxPrice}
+                  </Col>
                 </Row>
                 <Row>
-                  <Col>Total</Col>
-                  <Col>Rs.{order.totalPrice}</Col>
+                  <Col>{t("total")}</Col>
+                  <Col>
+                    {t("rupees")} {order.totalPrice}
+                  </Col>
                 </Row>
               </ListGroup.Item>
               {/* { PAY ORDER PLACEHOLDER} */}
@@ -267,10 +293,10 @@ const OrderScreen = () => {
                   ) : (
                     <div>
                       <Button
-                        onClick={(e)=> onApproveTest(e)}
+                        onClick={(e) => onApproveTest(e)}
                         style={{ marginBottom: "10px" }}
                       >
-                        Cash On Delivery book Order
+                        {t("place_order")}
                       </Button>
                       {/* <div>
                         <PayPalButtons
@@ -294,8 +320,9 @@ const OrderScreen = () => {
                       type="button"
                       className="btn btn-block"
                       onClick={deliverOrderHandler}
+                      disabled={loadingDeliver}
                     >
-                      Mark As Delivered
+                      {t("mark_as_delivered")}
                     </Button>
                   </ListGroup.Item>
                 )}
@@ -303,7 +330,12 @@ const OrderScreen = () => {
           </Card>
         </Col>
       </Row>
-      {showVerificationPopup && <GreetingDialog message="Congratulation!" handleDialog={(e:any)=>setShowVerificationPopup(false)}/>}
+      {showVerificationPopup && (
+        <GreetingDialog
+          message={t("congratulation")}
+          handleDialog={(e: any) => setShowVerificationPopup(false)}
+        />
+      )}
     </>
   );
 };

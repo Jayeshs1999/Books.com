@@ -7,8 +7,10 @@ import { saveShippingAddress } from "../slices/cartSlice";
 import CheckoutSteps from "../components/CheckoutSteps";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const ShippingScreen = () => {
+  const { t } = useTranslation();
   const digitPattern = /^\d*$/;
   const [isContinueButtonDisabled, setIsContinueButtonDisabled] =
     useState(true);
@@ -20,7 +22,9 @@ const ShippingScreen = () => {
 
   const [address, setAddress] = useState(shippingAddress?.address || "");
   const [city, setCity] = useState(shippingAddress?.city || "Pune");
-  const [phoneNumber, setPhoneNumber] = useState(shippingAddress?.phoneNumber || "")
+  const [phoneNumber, setPhoneNumber] = useState(
+    shippingAddress?.phoneNumber || ""
+  );
   const [postalCode, setPostalCode] = useState(
     shippingAddress?.postalCode || ""
   );
@@ -34,20 +38,21 @@ const ShippingScreen = () => {
       city !== "" &&
       postalCode !== "" &&
       country !== "" &&
-      state !== "" && phoneNumber!==""
+      state !== "" &&
+      phoneNumber !== ""
     ) {
       setIsContinueButtonDisabled(false);
     } else {
       setIsContinueButtonDisabled(true);
     }
-  }, [address, city, state, postalCode,country,phoneNumber]);
+  }, [address, city, state, postalCode, country, phoneNumber]);
 
-  const handlePhoneNumberChange = (e:any) => {
+  const handlePhoneNumberChange = (e: any) => {
     const value = e.target.value;
-    
+
     // Use a regular expression to match only digits
     const digitPattern = /^\d*$/;
-    
+
     if (digitPattern.test(value) && value.length <= 10) {
       // If it contains only digits and is 10 characters or fewer, update the state
       setPhoneNumber(value);
@@ -58,25 +63,32 @@ const ShippingScreen = () => {
     e.preventDefault();
     if (digitPattern.test(phoneNumber) && phoneNumber.length === 10) {
       dispatch(
-        saveShippingAddress({ address, city, postalCode, country, state, phoneNumber })
+        saveShippingAddress({
+          address,
+          city,
+          postalCode,
+          country,
+          state,
+          phoneNumber,
+        })
       );
       navigate("/payment");
-    }else {
-      toast.error("Phone Number is Invalid")
+    } else {
+      toast.error("Phone Number is Invalid");
     }
   };
 
   return (
     <>
       <Link to="/" className="btn btn-light my-3">
-        Go To Home
+        {t("go_to_home")}
       </Link>
-      <FormContainer comesfrom='false'>
+      <FormContainer comesfrom="false">
         <CheckoutSteps step1 step2 />
-        <h1>Shipping Address</h1>
+        <h1>{t("shipping_address")}</h1>
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="country" className="my-2">
-            <Form.Label>Country</Form.Label>
+            <Form.Label>{t("country")}</Form.Label>
             <Form.Control
               as="select"
               value={country}
@@ -89,7 +101,7 @@ const ShippingScreen = () => {
           </Form.Group>
 
           <Form.Group controlId="state" className="my-2">
-            <Form.Label>State</Form.Label>
+            <Form.Label>{t("state")}</Form.Label>
             <Form.Control
               as="select"
               value={state}
@@ -115,10 +127,10 @@ const ShippingScreen = () => {
           </Form.Group>
 
           <Form.Group controlId="address" className="my-2">
-            <Form.Label>Address</Form.Label>
+            <Form.Label>{t("address")}</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Enter address"
+              placeholder={t("enter_address")}
               value={address}
               onChange={(e) => {
                 setAddress(e.target.value);
@@ -137,10 +149,10 @@ const ShippingScreen = () => {
             </Form.Group> */}
 
           <Form.Group controlId="postalCode" className="my-2">
-            <Form.Label>Postal code</Form.Label>
+            <Form.Label>{t("postal_code")}</Form.Label>
             <Form.Control
               type="number"
-              placeholder="Enter postal code"
+              placeholder={t("enter_pin_code")}
               value={postalCode}
               onChange={(e) => {
                 setPostalCode(e.target.value);
@@ -148,10 +160,10 @@ const ShippingScreen = () => {
             ></Form.Control>
           </Form.Group>
           <Form.Group controlId="phonenumber" className="my-2">
-            <Form.Label>Phone Number</Form.Label>
+            <Form.Label>{t("phone_number")}</Form.Label>
             <Form.Control
               type="number"
-              placeholder="Enter Phone Number"
+              placeholder={t("enter_phone_number")}
               value={phoneNumber}
               onChange={handlePhoneNumberChange}
             ></Form.Control>
@@ -162,7 +174,7 @@ const ShippingScreen = () => {
             variant="primary"
             className="my-2"
           >
-            Continue
+            {t("continue")}
           </Button>
         </Form>
       </FormContainer>
