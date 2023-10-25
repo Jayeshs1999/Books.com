@@ -8,8 +8,10 @@ import { toast } from "react-toastify";
 import { useCreateProductMutation } from "../slices/productsAPISlice";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
+import { useSelector } from "react-redux";
 
 const AddProducts = (props: any) => {
+  const { userInfo } = useSelector((state: any) => state.auth);
   const prevProductLocation = localStorage.getItem("product_added_location");
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
@@ -17,11 +19,13 @@ const AddProducts = (props: any) => {
   const [brand, setBrand] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState<any>();
-  const [address, setAddress] = useState(
-    prevProductLocation ? prevProductLocation : ""
+  const [phoneNumber, setPhoneNumber] = useState<any>(
+    userInfo.isAdmin ? "+918888585093" : ""
   );
-  const [bookType,setBookType] = useState("New Book");
+  const [address, setAddress] = useState(
+    userInfo.isAdmin ? "Self" : prevProductLocation ? prevProductLocation : ""
+  );
+  const [bookType, setBookType] = useState("New Book");
   const [loader, setLoader] = useState(false);
   const [category, setCategory] = useState("Adventure stories");
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
@@ -58,7 +62,7 @@ const AddProducts = (props: any) => {
     image,
     address,
     phoneNumber,
-    bookType
+    bookType,
   ]);
 
   const uploadFileHandler = async (e: any) => {
@@ -83,7 +87,7 @@ const AddProducts = (props: any) => {
     e.preventDefault();
     const updatedProduct = {
       name,
-      price: price + 50,
+      price: price + (userInfo.isAdmin ? 0 : 50),
       image: image,
       brand,
       category,
@@ -91,7 +95,7 @@ const AddProducts = (props: any) => {
       description,
       address,
       phoneNumber,
-      bookType
+      bookType,
     };
     localStorage.setItem("product_added_location", address);
 
@@ -142,18 +146,22 @@ const AddProducts = (props: any) => {
                 onChange={(e) => setPrice(Number(e.target.value))}
               ></Form.Control>
             </Form.Group>
-            <span style={{ color: "red" }}>
-              <strong>Please Note:</strong>{" "}
-              <span>
-                We are adding Rs.50 to your original price for packing and
-                shipping
-              </span>
-            </span>
-            <div>
-              <strong style={{ color: "green" }}>
-                Total book price: {price} + {50} = {price + 50}
-              </strong>
-            </div>
+            {!userInfo.isAdmin && (
+              <>
+                <span style={{ color: "red" }}>
+                  <strong>Please Note:</strong>{" "}
+                  <span>
+                    We are adding Rs.50 to your original price for packing and
+                    shipping
+                  </span>
+                </span>
+                <div>
+                  <strong style={{ color: "green" }}>
+                    Total book price: {price} + {50} = {price + 50}
+                  </strong>
+                </div>{" "}
+              </>
+            )}
             {/* {Image input } */}
 
             <Form.Group controlId="image" className="my-2">
@@ -237,6 +245,7 @@ const AddProducts = (props: any) => {
             <Form.Group controlId="phonenumber" className="my-2">
               <Form.Label>Phone Number</Form.Label>
               <PhoneInput
+                readOnly={userInfo.isAdmin}
                 defaultCountry="IN"
                 placeholder="Enter phone number"
                 value={phoneNumber}
@@ -249,6 +258,7 @@ const AddProducts = (props: any) => {
             <Form.Group controlId="address" className="my-3">
               <Form.Label>Pickup Address</Form.Label>
               <Form.Control
+                readOnly={userInfo.isAdmin}
                 as="textarea" // Set "as" prop to "textarea"
                 rows={3} // Specify the number of visible rows (adjust as needed)
                 placeholder="Enter Pickup Address"

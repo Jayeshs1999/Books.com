@@ -16,8 +16,10 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import storage from "../../utils/firebase";
 import categories, { bookConditions } from "../../utils/objects";
 import PhoneInput from "react-phone-number-input";
+import { useSelector } from "react-redux";
 
 const ProductEditScreen = () => {
+  const { userInfo } = useSelector((state: any) => state.auth);
   const { id: productId } = useParams();
 
   const [name, setName] = useState("");
@@ -29,10 +31,14 @@ const ProductEditScreen = () => {
   const [loader, setLoader] = useState(false);
   const [imageURL, setImageURL] = useState("");
   const [category, setCategory] = useState("DefaultCategory");
-  const [phoneNumber, setPhoneNumber] = useState<any>();
-  const [address, setAddress] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState<any>(
+    userInfo.isAdmin ? "+918888585093" : ""
+  );
+  const [address, setAddress] = useState(
+    userInfo.isAdmin ? "+918888585093" : ""
+  );
   const [showButtonDisable, setShowButtonDisabled] = useState(true);
-  const [bookType,setBookType] = useState("New Book");
+  const [bookType, setBookType] = useState("New Book");
 
   const {
     data: product,
@@ -47,7 +53,7 @@ const ProductEditScreen = () => {
   useEffect(() => {
     if (product) {
       setName(product.name);
-      setPrice(product.price - 50);
+      setPrice(product.price - (userInfo.isAdmin ? 0 : 50));
       setImage(product.image);
       setBrand(product.brand);
       setCategory(product.category);
@@ -55,6 +61,7 @@ const ProductEditScreen = () => {
       setDescription(product.description);
       setAddress(product.address);
       setBookType(product.bookType);
+      setPhoneNumber(product.phoneNumber);
     }
   }, [product]);
 
@@ -85,7 +92,7 @@ const ProductEditScreen = () => {
     image,
     address,
     phoneNumber,
-    bookType
+    bookType,
   ]);
 
   function hasError(
@@ -99,7 +106,7 @@ const ProductEditScreen = () => {
     const updatedProduct = {
       _id: productId,
       name,
-      price: price + 50,
+      price: price + (userInfo.isAdmin ? 0 : 50),
       image: imageURL || image,
       brand,
       category,
@@ -107,7 +114,7 @@ const ProductEditScreen = () => {
       description,
       phoneNumber,
       address,
-      bookType
+      bookType,
     };
 
     if (phoneNumber.length === 13) {
@@ -176,20 +183,24 @@ const ProductEditScreen = () => {
                 onChange={(e) => setPrice(Number(e.target.value))}
               ></Form.Control>
             </Form.Group>
-            <span style={{ color: "red" }}>
-              <strong>Please Note:</strong>{" "}
-              <span>
-                We are adding Rs.50 to your original price for packing and
-                shipping
-              </span>
-            </span>
-            <div style={{ color: "green" }}>
-              <strong>Total book price:</strong>
-              <span>
-                {" "}
-                {price} + {50} = <strong>{price + 50}</strong>
-              </span>
-            </div>
+            {!userInfo.isAdmin && (
+              <>
+                <span style={{ color: "red" }}>
+                  <strong>Please Note:</strong>{" "}
+                  <span>
+                    We are adding Rs.50 to your original price for packing and
+                    shipping
+                  </span>
+                </span>
+                <div style={{ color: "green" }}>
+                  <strong>Total book price:</strong>
+                  <span>
+                    {" "}
+                    {price} + {50} = <strong>{price + 50}</strong>
+                  </span>
+                </div>
+              </>
+            )}
             {/* {Image input } */}
 
             <Form.Group controlId="image" className="my-2">
@@ -259,7 +270,6 @@ const ProductEditScreen = () => {
               </Form.Control>
             </Form.Group>
 
-
             <Form.Group controlId="description" className="my-2">
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -271,10 +281,12 @@ const ProductEditScreen = () => {
               ></Form.Control>
             </Form.Group>
             <Form.Group controlId="phonenumber" className="my-2">
-              <Form.Label style={{ color: "red" }}>
-                Please Add your phone number again &#128528;
+              <Form.Label>
+                Phone Number
+                {/* Please Add your phone number again &#128528; */}
               </Form.Label>
               <PhoneInput
+                readOnly={userInfo.isAdmin}
                 defaultCountry="IN"
                 placeholder="Enter phone number"
                 value={phoneNumber}
@@ -286,6 +298,7 @@ const ProductEditScreen = () => {
             <Form.Group controlId="address" className="my-3">
               <Form.Label>Pickup Address</Form.Label>
               <Form.Control
+                readOnly={userInfo.isAdmin}
                 as="textarea" // Set "as" prop to "textarea"
                 rows={3} // Specify the number of visible rows (adjust as needed)
                 placeholder="Enter Pickup Address"

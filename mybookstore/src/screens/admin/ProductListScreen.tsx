@@ -74,16 +74,18 @@ const ProductListScreen = () => {
         <Message variant="danger">{error}</Message>
       ) : (
         <>
-          <div>
-            <strong style={{ color: "red", fontSize: "20px" }}>
-              How it work:
-            </strong>{" "}
-            <span style={{ color: "green" }}>
-              Sell your books on our platform, get notified when someone orders
-              your books, and we'll pick up the books from you and deliver them
-              to the buyers.
-            </span>
-          </div>
+          {!userInfo.isAdmin && (
+            <div>
+              <strong style={{ color: "red", fontSize: "20px" }}>
+                How it work:
+              </strong>{" "}
+              <span style={{ color: "green" }}>
+                Sell your books on our platform, get notified when someone
+                orders your books, and we'll pick up the books from you and
+                deliver them to the buyers.
+              </span>
+            </div>
+          )}
           <Link to={"/"} className="btn btn-light my-3">
             Go Back to home
           </Link>
