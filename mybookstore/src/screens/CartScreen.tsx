@@ -7,8 +7,10 @@ import { Link, useSearchParams } from "react-router-dom";
 import { ListGroup } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import { addToCart, removeFromCart } from "../slices/cartSlice";
+import { useTranslation } from "react-i18next";
 
 const CartScreen = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,20 +40,24 @@ const CartScreen = () => {
         }`}
         className="btn btn-light my-3"
       >
-        Go Back
+        {t("go_back")}
       </Link>
       <Row>
         <Col md={8}>
-          <h1 style={{ marginBottom: "20px" }}>Shopping Cart</h1>
+          <h1 style={{ marginBottom: "20px" }}>{t("shopping_cart")}</h1>
           {cartItems.length === 0 ? (
             <Message>
-              Your cart is empty<Link to="/"> Go Back</Link>
+              {t("your_cart_is_empty")}
+              <Link to="/"> {t("go_back")}</Link>
             </Message>
           ) : (
             <>
               <ListGroup variant="flush">
                 {cartItems.map((item: any) => (
-                  <ListGroup.Item key={item._id} style={{backgroundColor:'#f4f4f4'}}>
+                  <ListGroup.Item
+                    key={item._id}
+                    style={{ backgroundColor: "#f4f4f4" }}
+                  >
                     <Row>
                       <Col md={2}>
                         <Image src={item.image} alt={item.name} fluid rounded />
@@ -59,7 +65,9 @@ const CartScreen = () => {
                       <Col md={3}>
                         <Link to={`/product/${item._id}`}>{item.name}</Link>
                       </Col>
-                      <Col md={2}>Rs.{item.price}</Col>
+                      <Col md={2}>
+                        {t("rupees")} {item.price}
+                      </Col>
                       <Col md={2}>
                         <Form.Control
                           as="select"
@@ -96,11 +104,11 @@ const CartScreen = () => {
             <ListGroup variant="flush">
               <ListGroup.Item>
                 <h2>
-                  SubTotal (
+                  {t("sub_total")} (
                   {cartItems.reduce((acc: any, item: any) => acc + item.qty, 0)}
-                  ) Items
+                  ) {t("items")}
                 </h2>
-                Rs.
+                {t("rupees")}
                 {cartItems
                   .reduce(
                     (acc: any, item: any) => acc + item.qty * item.price,
@@ -118,7 +126,10 @@ const CartScreen = () => {
                   Proceed To Checkout
                 </Button>
               </ListGroup.Item> */}
-              <h1 style={{color:'red'}}>Sorry Currently Webiste is in Development Phase. Very soon we will inform you</h1>
+              <h1 style={{ color: "red" }}>
+                Sorry Currently Webiste is in Development Phase. Very soon we
+                will inform you
+              </h1>
             </ListGroup>
           </Card>
         </Col>
