@@ -116,7 +116,7 @@ const CartScreen = () => {
                   )
                   .toFixed(2)}
               </ListGroup.Item>
-              {/* <ListGroup.Item>
+              <ListGroup.Item>
                 <Button
                   type="button"
                   className="btn-block"
@@ -125,11 +125,11 @@ const CartScreen = () => {
                 >
                   Proceed To Checkout
                 </Button>
-              </ListGroup.Item> */}
-              <h1 style={{ color: "red" }}>
+              </ListGroup.Item>
+              {/* <h1 style={{ color: "red" }}>
                 Sorry Currently Webiste is in Development Phase. Very soon we
                 will inform you
-              </h1>
+              </h1> */}
             </ListGroup>
           </Card>
         </Col>
