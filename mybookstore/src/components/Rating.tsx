@@ -1,7 +1,9 @@
 import React from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
+import useDeviceType from "../utils/DeviceType";
 
 const Rating = ({ value, text }: any) => {
+  const deviceType = useDeviceType();
   return (
     <div className="rating">
       <span>
@@ -49,7 +51,7 @@ const Rating = ({ value, text }: any) => {
           <FaRegStar />
         )}
       </span>
-      <span className="rating-text">{text && text}</span>
+      {deviceType!=='mobile' && <span className="rating-text">{text && text}</span>}
     </div>
   );
 };

@@ -11,9 +11,11 @@ import { useSelector } from "react-redux";
 import OnlineStatusChecker from "../utils/OnlineStatusChecker";
 import Meta from "../components/Meta";
 import { useTranslation } from "react-i18next";
+import useDeviceType from "../utils/DeviceType";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
+  const deviceType = useDeviceType();
   const { pageNumber, keyword, categoryName } = useParams();
 
   const { data, isLoading, error, isFetching } = useGetProductsQuery({
@@ -46,12 +48,13 @@ const HomeScreen = () => {
             <>
               <Meta/>
               <h1>{t('latest_products')}</h1>
-              <Row>
+              {/* <Row>
                 {data.products &&
                   data.products.map((product: any) => (
                     <Col
                       key={product && product["_id"]}
-                      sm={12}
+                      xs={6}
+                      sm={6}
                       md={6}
                       lg={4}
                       xl={3}
@@ -59,7 +62,31 @@ const HomeScreen = () => {
                       <Product product={product} />
                     </Col>
                   ))}
-              </Row>
+              </Row> */}
+
+              <div
+            style={{
+              display: deviceType === "mobile" ? "grid" : "flex",
+              gridTemplateColumns: deviceType === "mobile" ? "1fr 1fr" : "",
+              flexWrap: deviceType === "mobile" ? "initial" : "wrap",
+              justifyContent: deviceType === "mobile" ? "" : "center",
+              padding: deviceType === "mobile" ? "6px" : "20px",
+            }}
+          >
+            {data?.products.map((data: any) => (
+              <Product product={data} />
+              // <Card
+              //   handleClick={() => {
+              //     window.scroll(0, 0);
+              //     navigate(`/productDetail/${data?._id}`);
+              //   }}
+              //   imageSrc={data?.image}
+              //   heading={data?.name}
+              //   subtitle={data?.price}
+              //   address={data?.address}
+              // />
+            ))}
+          </div>
               <Paginate
                 comesFrom=""
                 pages={data.pages}
