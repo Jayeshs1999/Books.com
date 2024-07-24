@@ -79,20 +79,28 @@ table th {
 }
 
 .carousel-item img {
-  object-fit: contain; /* Ensure the image covers the fixed dimensions */
+  object-fit: fill; /* Ensure the image covers the fixed dimensions */
   width: 100%;
   height: 100%;
 }
 
+@media only screen and (max-width: 768px) { 
+  .carousel-item {
+    /* width: 300px; Set your desired width */
+    height: 250px; /* Set your desired height */
+  }
+}
+
+
 .card-background-gradient {
-  background-color: #f0f0f0;
-background-image: linear-gradient(62deg, #f0f0f0 0%, #E0C3FC 100%);
+  background-color: snow;
+/* background-image: linear-gradient(62deg, #f0f0f0 0%, #E0C3FC 100%); */
 
 }
 
 .card-background-gradient:hover {
-  background-color: #85FFBD;
-  background-image: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%);
+  background-color: #ffacdba8;
+  /* background-image: linear-gradient(45deg, #85FFBD 0%, #FFFB7D 100%); */
 }
 
 .carousel-background {

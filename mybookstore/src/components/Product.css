@@ -1,0 +1,11 @@
+.gold-card:hover {
+  transform: translateY(-5px);
+}
+
+.gold-card-content {
+  padding: 20px;
+}
+
+.gold-card-subtitle {
+  color: #666;
+}
