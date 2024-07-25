@@ -87,7 +87,7 @@ const AboutUs = () => {
             </div>
           </Col>
           <Col md={6}>
-            <h3>Welcome to our BookBucket.Com</h3>
+            <h3>Welcome to our BookBucket.IN</h3>
             <h4>Contact us</h4>
             <p>+91 8888585093</p>
             <p>jayeshsevatkar55@gmail.com</p>

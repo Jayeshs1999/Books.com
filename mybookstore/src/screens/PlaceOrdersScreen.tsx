@@ -28,7 +28,7 @@ const PlaceOrdersScreen = () => {
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
 
   const placeOrderHandler = async () => {
-    try {
+    try {      
       const res = await createOrder({
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
@@ -37,7 +37,7 @@ const PlaceOrdersScreen = () => {
         shippingPrice: cart.shippingPrice,
         taxPrice: cart.taxPrice,
         totalPrice: cart.totalPrice,
-        email_address: userInfo.email,
+        email_address: userInfo.email,    
       }).unwrap();
       dispatch(clearCartItems([]));
       navigate(`/order/${res._id}`);
@@ -57,6 +57,10 @@ const PlaceOrdersScreen = () => {
                 <strong>{t("address")} :&nbsp;&nbsp;</strong>
                 {cart.shippingAddress.address},{cart.shippingAddress.city},
                 {cart.shippingAddress.postalCode},{cart.shippingAddress.country}
+              </p>
+              <p>
+                <strong>{'Phone Number'} :&nbsp;&nbsp;</strong>
+                {cart.shippingAddress.phoneNumber}
               </p>
             </ListGroup.Item>
 

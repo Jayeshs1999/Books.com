@@ -199,6 +199,11 @@ const OrderScreen = () => {
                 {order.shippingAddress.postalCode},{" "}
                 {order.shippingAddress.country}
               </p>
+              <p>
+                <strong>{"Phone Number"} : </strong>
+                {order.shippingAddress.phoneNumber}
+              
+              </p>
 
               {order.isDelivered ? (
                 <Message variant="success">

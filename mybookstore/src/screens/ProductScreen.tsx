@@ -93,14 +93,15 @@ const ProductScreen = () => {
             <>
               <Meta title={product.name} />
               <Row>
-                <Col md={5}>
+                <Col md={2} style={{textAlign:'center'}}>
                   <Image
+                    style={{height:'344px'}}
                     src={product && product["image"]}
                     alt={product && product["name"]}
                     fluid
                   />
                 </Col>
-                <Col md={4}>
+                <Col md={7}>
                   <ListGroup variant="flush">
                     <ListGroup.Item>
                       <h3>{product && product["name"]}</h3>

@@ -29,6 +29,7 @@ const OrderListScreen = () => {
             <th>TOTAL</th>
             <th>PAID</th>
             <th>DELIVERED</th>
+            <th>Phone Number</th>
             <th></th>
           </tr>
         </thead>
@@ -49,6 +50,7 @@ const OrderListScreen = () => {
               ): (
                 <FaTimes style={{color:'red'}} />
               )}</td>
+              <td>{order?.shippingAddress?.phoneNumber}</td>
               <td>
                 <LinkContainer to={`/order/${order._id}`} >
                   <Button variant='light' className='btn-sm'>
