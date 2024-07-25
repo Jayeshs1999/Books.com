@@ -12,6 +12,7 @@ import OnlineStatusChecker from "../utils/OnlineStatusChecker";
 import Meta from "../components/Meta";
 import { useTranslation } from "react-i18next";
 import useDeviceType from "../utils/DeviceType";
+import noResult from "../assets/no-result.svg";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ const HomeScreen = () => {
     categoryName,
   });
   const { isOnline } = useSelector((state: any) => state.status);
+
   return (
     <>
       {!isOnline ? (
@@ -35,19 +37,19 @@ const HomeScreen = () => {
             <ProductCorousel />
           ) : (
             <Link to={"/"} className="btn btn-light mb-4">
-              {t('go_back')}
+              {t("go_back")}
             </Link>
           )}
           {isLoading || isFetching ? (
             <Loader />
           ) : error ? (
             <Message variant="danger">
-              {t('something_went_wrong_please_refresh_the_page')}
+              {t("something_went_wrong_please_refresh_the_page")}
             </Message>
           ) : (
             <>
-              <Meta/>
-              <h1>{t('latest_products')}</h1>
+              <Meta />
+              <h1>{t("latest_products")}</h1>
               {/* <Row>
                 {data.products &&
                   data.products.map((product: any) => (
@@ -63,30 +65,45 @@ const HomeScreen = () => {
                     </Col>
                   ))}
               </Row> */}
+              {!data?.products.length ? (
+                <img
+                  src={noResult}
+                  style={{
+                    height: "200px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                  alt="no-book-found"
+                />
+              ) : (
+                <div
+                  style={{
+                    display: deviceType === "mobile" ? "grid" : "flex",
+                    gridTemplateColumns:
+                      deviceType === "mobile" ? "1fr 1fr" : "",
+                    flexWrap: deviceType === "mobile" ? "initial" : "wrap",
+                    justifyContent: deviceType === "mobile" ? "" : "center",
+                    padding: deviceType === "mobile" ? "6px" : "20px",
+                  }}
+                >
+                  {data?.products.map((data: any) => (
+                    <Product product={data} />
+                    // <Card
+                    //   handleClick={() => {
+                    //     window.scroll(0, 0);
+                    //     navigate(`/productDetail/${data?._id}`);
+                    //   }}
+                    //   imageSrc={data?.image}
+                    //   heading={data?.name}
+                    //   subtitle={data?.price}
+                    //   address={data?.address}
+                    // />
+                  ))}
+                </div>
+              )}
 
-              <div
-            style={{
-              display: deviceType === "mobile" ? "grid" : "flex",
-              gridTemplateColumns: deviceType === "mobile" ? "1fr 1fr" : "",
-              flexWrap: deviceType === "mobile" ? "initial" : "wrap",
-              justifyContent: deviceType === "mobile" ? "" : "center",
-              padding: deviceType === "mobile" ? "6px" : "20px",
-            }}
-          >
-            {data?.products.map((data: any) => (
-              <Product product={data} />
-              // <Card
-              //   handleClick={() => {
-              //     window.scroll(0, 0);
-              //     navigate(`/productDetail/${data?._id}`);
-              //   }}
-              //   imageSrc={data?.image}
-              //   heading={data?.name}
-              //   subtitle={data?.price}
-              //   address={data?.address}
-              // />
-            ))}
-          </div>
               <Paginate
                 comesFrom=""
                 pages={data.pages}
